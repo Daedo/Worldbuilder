@@ -2,12 +2,13 @@ package stars;
 
 import data.DoubleUnitValue;
 import data.Value;
+import data.ValueInformation;
 
 public abstract class Star {
 	
 	public DoubleUnitValue mass;
 	public DoubleUnitValue radius;
-	public Value<String> name = new Value<>("","Name");
+	public Value<String> name = new Value<>("","Name",true);
 	
 	public DoubleUnitValue getCircumference() {
 		return new DoubleUnitValue(2*Math.PI*this.radius.value,"Circumference",this.radius.unit);
@@ -62,5 +63,11 @@ public abstract class Star {
 			return null;
 		}
 		
+	}
+
+	public void update(ValueInformation valInfo, String val) {
+		if(valInfo.equals(this.name)) {
+			this.name.value = val;
+		}
 	}
 }

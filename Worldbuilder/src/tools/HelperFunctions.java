@@ -32,4 +32,22 @@ public class HelperFunctions {
 	    bd = bd.setScale(places, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
 	}
+	
+	public static double parseDefault(String str, double defaultVal) {
+		double out;
+		
+		try {
+			out = Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			out = defaultVal;
+		}
+		
+		return out;
+	}
+	
+	public static double linearClamp(double val,double min,double max) {
+		if(val<min) return min;
+		if(val>max) return max;
+		return val;
+	}
 }
