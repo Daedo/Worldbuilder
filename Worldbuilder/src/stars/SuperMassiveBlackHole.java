@@ -1,5 +1,6 @@
 package stars;
 
+import data.SolarMass;
 import tools.HelperFunctions;
 
 public class SuperMassiveBlackHole extends BlackHole {
@@ -14,7 +15,7 @@ public class SuperMassiveBlackHole extends BlackHole {
 	}
 
 	private void setMass() {
-		this.massInSolarMasses = HelperFunctions.getRandomRange(100_000, 10_000_000_000d);
+		this.mass = new SolarMass(HelperFunctions.getRandomRange(100_000, 10_000_000_000d));
 	}
 	
 	@Override
@@ -24,6 +25,6 @@ public class SuperMassiveBlackHole extends BlackHole {
 	
 	@Override
 	public String encode() {
-		return "SuperMassiveBlackHole,"+this.massInSolarMasses+","+this.radius;
+		return "SuperMassiveBlackHole,"+this.mass+","+this.radius;
 	}
 }

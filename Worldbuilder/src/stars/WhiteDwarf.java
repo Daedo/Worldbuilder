@@ -1,20 +1,22 @@
 package stars;
 
+import data.DoubleUnitValue;
+import data.SolarMass;
 import tools.HelperFunctions;
 
 public class WhiteDwarf extends Star {
 	public WhiteDwarf() {
-		this.massInSolarMasses=HelperFunctions.getRandomRange(0.17, 1.7);
+		this.mass= new SolarMass( HelperFunctions.getRandomRange(0.17, 1.7));
 		setRadius();
 	}
 
 	private void setRadius() {
-		this.radius = Math.pow(this.massInSolarMasses, -1.0/3.0);
+		this.radius = new DoubleUnitValue(Math.pow(this.mass.value, -1.0/3.0),"Radius","Earth Radii");
 	}
 	
 	public WhiteDwarf(String str) {
 		String[] val = str.split(",");
-		this.massInSolarMasses = Double.parseDouble(val[1]);
+		this.mass = new SolarMass( Double.parseDouble(val[1]));
 		setRadius();
 	}
 
@@ -31,6 +33,6 @@ public class WhiteDwarf extends Star {
 
 	@Override
 	public String encode() {
-		return "WhiteDwarf,"+this.massInSolarMasses+","+this.radius;
+		return "WhiteDwarf,"+this.mass.value+","+this.radius.value;
 	}
 }

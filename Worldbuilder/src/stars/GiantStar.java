@@ -1,15 +1,18 @@
 package stars;
 
+import data.SolarMass;
+import data.SolarRadius;
+
 public class GiantStar extends Star {
 	public GiantStar() {
-		this.massInSolarMasses = 100;
-		this.radius = 100;
+		this.mass = new SolarMass(100d);
+		this.radius = new SolarRadius(100d);
 	}
 	
 	public GiantStar(String str) {
 		String[] val = str.split(",");
-		this.massInSolarMasses = Double.parseDouble(val[1]);
-		this.radius = Double.parseDouble(val[2]);
+		this.mass = new SolarMass(Double.parseDouble(val[1]));
+		this.radius = new SolarRadius( Double.parseDouble(val[2]));
 	}
 
 	@Override
@@ -25,6 +28,6 @@ public class GiantStar extends Star {
 
 	@Override
 	public String encode() {
-		return "GiantStar,"+this.massInSolarMasses+","+this.radius;
+		return "GiantStar,"+this.mass.value+","+this.radius.value;
 	}
 }

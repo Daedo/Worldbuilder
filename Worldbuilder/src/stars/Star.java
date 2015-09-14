@@ -1,33 +1,41 @@
 package stars;
 
+import data.DoubleUnitValue;
+import data.Value;
+
 public abstract class Star {
 	
-	public double massInSolarMasses;
-	public double radius;
+	public DoubleUnitValue mass;
+	public DoubleUnitValue radius;
+	public Value<String> name = new Value<>("","Name");
 	
-	public double getCircumference() {
-		return 2*Math.PI*this.radius;
+	public DoubleUnitValue getCircumference() {
+		return new DoubleUnitValue(2*Math.PI*this.radius.value,"Circumference",this.radius.unit);
 	}
 	
-	public double getSurfaceArea() {
-		return 4*Math.PI*this.radius*this.radius;
+	public DoubleUnitValue getSurfaceArea() {
+		double r = this.radius.value;
+		return new DoubleUnitValue(4*Math.PI*r*r,"Surface Area",this.radius.unit+"^2");
 	}
 	
-	public double getVolume() {
-		return 4/3*Math.PI*this.radius*this.radius*this.radius;
+	public DoubleUnitValue getVolume() {
+		double r = this.radius.value;
+		return new DoubleUnitValue(4/3*Math.PI*r*r*r,"Volume",this.radius.unit+"^3");
 	}
 	
-	public double getDensity() {
-		return this.massInSolarMasses/getVolume();
+	public DoubleUnitValue getDensity() {
+		DoubleUnitValue vol = getVolume();
+		double dens = this.mass.value/vol.value;
+		return new DoubleUnitValue(dens,"Density",this.mass.unit+"/"+vol.unit);
 	}
 
 	public String dataSheet() {
-		String out = "Mass in Solar Masses: "+this.massInSolarMasses+"\n"+
-				"Radius: "+this.radius+"\n"+
-				"Circumference: "+getCircumference()+"\n"+
-				"Surface Area: "+getSurfaceArea()+"\n"+
-				"Volume: "+getVolume()+"\n"+
-				"Density: "+getDensity();
+		String out = this.mass+"\n"+
+				this.radius+"\n"+
+				getCircumference()+"\n"+
+				getSurfaceArea()+"\n"+
+				getVolume()+"\n"+
+				getDensity();
 		return out;
 	}
 	

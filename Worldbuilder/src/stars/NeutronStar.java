@@ -1,5 +1,7 @@
 package stars;
 
+import data.DoubleUnitValue;
+import data.SolarMass;
 import tools.HelperFunctions;
 
 public class NeutronStar extends Star {
@@ -10,16 +12,16 @@ public class NeutronStar extends Star {
 	
 	public NeutronStar(String str) {
 		String[] val = str.split(",");
-		this.massInSolarMasses = Double.parseDouble(val[1]);
-		this.radius = Double.parseDouble(val[2]);
+		this.mass = new SolarMass(Double.parseDouble(val[1]));
+		this.radius = new DoubleUnitValue( Double.parseDouble(val[2]),"Radius","KM");
 	}
 
 	private void setRadius() {
-		this.radius = HelperFunctions.getRandomRange(10, 13);
+		this.radius =new DoubleUnitValue( HelperFunctions.getRandomRange(10, 13),"Radius","KM");
 	}
 
 	private void setMass() {
-		this.massInSolarMasses = HelperFunctions.getRandomRange(1.4, 3);
+		this.mass = new SolarMass(HelperFunctions.getRandomRange(1.4, 3));
 		
 	}
 
@@ -36,6 +38,6 @@ public class NeutronStar extends Star {
 
 	@Override
 	public String encode() {
-		return "NeutronStar,"+this.massInSolarMasses+","+this.radius;
+		return "NeutronStar,"+this.mass.value+","+this.radius.value;
 	}
 }

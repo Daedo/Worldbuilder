@@ -1,18 +1,18 @@
 package data;
 
-public class UnitValue<T> extends Value<T> {
+public class DoubleUnitValue extends DoubleValue {
 	public String unit;
 
-	public UnitValue(T val) {
+	public DoubleUnitValue(double val) {
 		this(val,"","");
 	}
 
-	public UnitValue(T val, String descrip, String valUnit) {
+	public DoubleUnitValue(double val, String descrip, String valUnit) {
 		super(val,descrip);
 		this.unit = valUnit;
 	}
 	
-	public UnitValue(T val, String descrip, String valUnit,boolean editable) {
+	public DoubleUnitValue(double val, String descrip, String valUnit,boolean editable) {
 		super(val,descrip,editable);
 		this.unit = valUnit;
 	}
@@ -20,5 +20,5 @@ public class UnitValue<T> extends Value<T> {
 	@Override
 	public String toString() {
 		return super.toString()+" "+this.unit;
-	}	
+	}
 }

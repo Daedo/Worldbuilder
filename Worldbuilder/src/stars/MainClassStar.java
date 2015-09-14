@@ -3,6 +3,10 @@ package stars;
 import java.awt.Color;
 import java.util.Random;
 
+import data.DoubleUnitValue;
+import data.SolarMass;
+import data.SolarRadius;
+import data.Value;
 import tools.HelperFunctions;
 import tools.MultipointInterpolator;
 
@@ -42,9 +46,9 @@ public class MainClassStar  extends Star{
 	
 	
 	public StarClass sClass;
-	public double luminosityInSuns,lifetimeInYears,temperatureInKelvin;
-	public double habitableZoneInnerInAU,habitableZoneOuterInAU;
-	public Color sColor;
+	public DoubleUnitValue luminosityInSuns,lifetimeInYears,temperatureInKelvin;
+	public DoubleUnitValue habitableZoneInnerInAU,habitableZoneOuterInAU;
+	public Value<Color> sColor;
 	
 	public MainClassStar() {
 		setClass();
@@ -64,7 +68,7 @@ public class MainClassStar  extends Star{
 
 	public MainClassStar(String str) {
 		String[] val = str.split(",");
-		this.massInSolarMasses = Double.parseDouble(val[1]);
+		this.mass = new SolarMass(Double.parseDouble(val[1]));
 		this.sClass = StarClass.valueOf(val[3]);
 		setRadius();
 		setMainStarData();
@@ -109,36 +113,38 @@ public class MainClassStar  extends Star{
 	}
 
 	private void setMass() {
-		this.massInSolarMasses = HelperFunctions.getRandomRange(this.sClass.lowerMassLimit, this.sClass.upperMassLimit);
+		this.mass = new SolarMass(HelperFunctions.getRandomRange(this.sClass.lowerMassLimit, this.sClass.upperMassLimit));
 	}
 	
 	private void setRadius() {
-		if(this.massInSolarMasses>1) {
-			this.radius = Math.pow(this.massInSolarMasses, 0.5);
+		double r;
+		if(this.mass.value>1) {
+			r = Math.pow(this.mass.value, 0.5);
 		} else {
-			this.radius = Math.pow(this.massInSolarMasses, 0.8);
+			r = Math.pow(this.mass.value, 0.8);
 		}
+		this.radius = new SolarRadius(r);
 	}
 	
 	private void setMainStarData() {
 		
 		double exponent;
-		if(this.massInSolarMasses<=0.1) {
+		if(this.mass.value<=0.1) {
 			exponent = EXPONENT_POINT_ONE_SOLAR_MASSES;
 		} else {
-			if(this.massInSolarMasses<=1) {
+			if(this.mass.value<=1) {
 				//0.1-1
-				double interpolator = Math.log10(this.massInSolarMasses)-Math.log10(0.1);
+				double interpolator = Math.log10(this.mass.value)-Math.log10(0.1);
 				exponent = HelperFunctions.lerp(EXPONENT_POINT_ONE_SOLAR_MASSES,EXPONENT_ONE_SOLAR_MASS,interpolator);
 			} else {
-				if(this.massInSolarMasses<=10) {
+				if(this.mass.value<=10) {
 					//1-10
-					double interpolator = Math.log10(this.massInSolarMasses)-Math.log10(1);
+					double interpolator = Math.log10(this.mass.value)-Math.log10(1);
 					exponent = HelperFunctions.lerp(EXPONENT_ONE_SOLAR_MASS,EXPONENT_TEN_SOLAR_MASSES,interpolator);
 				} else {
-					if(this.massInSolarMasses<=100) {
+					if(this.mass.value<=100) {
 						//10-100
-						double interpolator = Math.log10(this.massInSolarMasses)-Math.log10(10);
+						double interpolator = Math.log10(this.mass.value)-Math.log10(10);
 						exponent = HelperFunctions.lerp(EXPONENT_TEN_SOLAR_MASSES,EXPONENT_HUNDRED_SOLAR_MASSES,interpolator);
 					} else {
 						exponent = EXPONENT_HUNDRED_SOLAR_MASSES;
@@ -147,13 +153,19 @@ public class MainClassStar  extends Star{
 			}
 		}
 		
-		this.luminosityInSuns = Math.pow(this.massInSolarMasses, exponent);
+		this.luminosityInSuns = new DoubleUnitValue(Math.pow(this.mass.value, exponent),"Luminosity","Suns");
 		
-		this.lifetimeInYears = this.massInSolarMasses/this.luminosityInSuns;
-		this.temperatureInKelvin = Math.pow(this.luminosityInSuns/(this.radius*this.radius), 0.25)*TEMPERATURE_OF_THE_SUN_IN_KELVIN;
+		this.lifetimeInYears = new DoubleUnitValue(this.mass.value/this.luminosityInSuns.value,"Lifetime","Years");
 		
-		this.habitableZoneInnerInAU = Math.sqrt(this.luminosityInSuns/1.1);
-		this.habitableZoneOuterInAU = Math.sqrt(this.luminosityInSuns/0.53);
+		double r = this.radius.value;
+		double temp =  Math.pow(this.luminosityInSuns.value/(r*r), 0.25)*TEMPERATURE_OF_THE_SUN_IN_KELVIN;
+		this.temperatureInKelvin = new DoubleUnitValue(temp, "Temperature", "Kelvin");
+		
+		double hInner				= Math.sqrt(this.luminosityInSuns.value/1.1);
+		this.habitableZoneInnerInAU = new DoubleUnitValue(hInner, "Habitable Zone Inner", "AU");
+		
+		double hOuter				= Math.sqrt(this.luminosityInSuns.value/0.53);
+		this.habitableZoneOuterInAU = new DoubleUnitValue(hOuter, "Habitable Zone Outer", "AU");
 	}
 
 	private void setColor() {
@@ -165,7 +177,7 @@ public class MainClassStar  extends Star{
 		colorInterp.addDatapoint(5_200, COLOR_FIVE_POINT_TWO_THOUSAND_KELVIN);
 		colorInterp.addDatapoint(3_700, COLOR_THREE_POINT_SEVEN_THOUSAND_KELVIN);
 		colorInterp.addDatapoint(2_400, COLOR_TWO_POINT_FOUR_THOUSAND_KELVIN);
-		this.sColor = colorInterp.getLerp(this.temperatureInKelvin);
+		this.sColor = new Value<>(colorInterp.getLerp(this.temperatureInKelvin.value),"Color");
 	}
 	
 	@Override
@@ -193,7 +205,8 @@ public class MainClassStar  extends Star{
 
 	@Override
 	public String encode() {
-		return "MainClassStar,"+this.massInSolarMasses+","+this.radius+","+this.sClass.name()+","+this.luminosityInSuns+","+this.lifetimeInYears+","+this.temperatureInKelvin+
-				","+this.habitableZoneInnerInAU+","+this.habitableZoneOuterInAU+","+this.sColor.getRGB();
+		return "MainClassStar,"+this.mass.value+","+this.radius.value+","+this.sClass.name()+","+this.luminosityInSuns.value
+				+","+this.lifetimeInYears.value+","+this.temperatureInKelvin.value+","+
+				this.habitableZoneInnerInAU.value+","+this.habitableZoneOuterInAU.value+","+this.sColor.value.getRGB();
 	}
 }

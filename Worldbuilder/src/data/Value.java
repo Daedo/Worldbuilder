@@ -1,12 +1,16 @@
 package data;
 
-public class Value<T> {
+public class Value<T> extends ValueInformation{
 	public T value;
-	public String description;
+	
+	public Value(T val, String descrip,boolean editable) {
+		super(descrip,editable);
+		this.value = val;
+	}
 	
 	public Value(T val, String descrip) {
+		super(descrip);
 		this.value = val;
-		this.description = descrip;
 	}
 	
 	public Value(T val) {
@@ -15,6 +19,6 @@ public class Value<T> {
 	
 	@Override
 	public String toString() {
-		return this.description+": "+this.value;
+		return super.toString()+this.value;
 	}
 }

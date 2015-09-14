@@ -1,9 +1,12 @@
 package stars;
 
+import data.DoubleUnitValue;
+import data.SolarMass;
+import data.SolarRadius;
 import tools.HelperFunctions;
 
 public class BlackHole extends Star {
-	public double photosphere;
+	public DoubleUnitValue photosphere;
 	public BlackHole() {
 		setMass();
 		setRadius();
@@ -12,21 +15,21 @@ public class BlackHole extends Star {
 
 	public BlackHole(String str) {
 		String[] val = str.split(",");
-		this.massInSolarMasses = Double.parseDouble(val[1]);
+		this.mass = new SolarMass(Double.parseDouble(val[1]));
 		setRadius();
 		setPhotosphere();
 	}
 
 	protected void setPhotosphere() {
-		this.photosphere = 1.5*this.radius;
+		this.photosphere = new DoubleUnitValue(1.5*this.radius.value,"Photosphere",this.radius.unit);
 	}
 
 	protected void setRadius() {
-		this.radius = 2.95*this.massInSolarMasses;
+		this.radius = new SolarRadius(2.95*this.mass.value);
 	}
 
 	private void setMass() {
-		this.massInSolarMasses= HelperFunctions.getRandomRange(5, 500);
+		this.mass= new SolarMass(HelperFunctions.getRandomRange(5, 500));
 	}
 	
 	@Override
@@ -35,13 +38,13 @@ public class BlackHole extends Star {
 	}
 	
 	@Override
-	public double getDensity() {
-		return 42;
+	public DoubleUnitValue getDensity() {
+		return new DoubleUnitValue(0,"Density","A Lot");
 	}
 	
 	@Override
 	public String encode() {
-		return "BlackHole,"+this.massInSolarMasses+","+this.radius+","+this.photosphere;
+		return "BlackHole,"+this.mass.value+","+this.radius.value+","+this.photosphere.value;
 	}
 
 	@Override
