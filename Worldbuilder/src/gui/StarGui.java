@@ -70,6 +70,7 @@ public class StarGui extends JFrame {
 	 * Create the frame.
 	 */
 	public StarGui() {
+		this.setTitle("Worldbuilder Version 1");
 		this.stars = new Vector<>();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -199,7 +200,7 @@ public class StarGui extends JFrame {
 		});
 		mnObject.add(mntmGiantStar);
 
-		JMenuItem mntmWhiteDwraf = new JMenuItem("White Dwraf");
+		JMenuItem mntmWhiteDwraf = new JMenuItem("White Dwarf");
 		mntmWhiteDwraf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				StarGui.this.stars.addElement(Stargenerator.generateWhiteDwraf());
