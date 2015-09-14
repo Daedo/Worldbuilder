@@ -25,19 +25,8 @@ public class WhiteDwarf extends Star {
 	}
 
 	@Override
-	public String toString() {
+	public String starType() {
 		return "White Dwarf";
-	}
-
-	@Override
-	public String toInfobox() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String encode() {
-		return "WhiteDwarf,"+this.mass.value+","+this.radius.value;
 	}
 	
 	@Override
@@ -49,5 +38,11 @@ public class WhiteDwarf extends Star {
 		} else {
 			super.update(valInfo, val);
 		}
+	}
+
+	@Override
+	public String toInfobox() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

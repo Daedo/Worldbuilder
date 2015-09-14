@@ -33,19 +33,8 @@ public class NeutronStar extends Star {
 	}
 
 	@Override
-	public String toString() {
+	public String starType() {
 		return "Neutron Star";
-	}
-
-	@Override
-	public String toInfobox() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String encode() {
-		return "NeutronStar,"+this.mass.value+","+this.radius.value;
 	}
 	
 	@Override
@@ -59,5 +48,11 @@ public class NeutronStar extends Star {
 		} else {
 			super.update(valInfo, val);
 		}
+	}
+
+	@Override
+	public String toInfobox() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -48,6 +48,7 @@ public class StarGui extends JFrame {
 	JList<Star> list;
 	JPanel panel;
 	private GridBagConstraints gbc_panel;
+	SortType sortType = SortType.TYPE_FIRST;
 
 	/**
 	 * Launch the application.
@@ -96,13 +97,13 @@ public class StarGui extends JFrame {
 		});
 		mnFile.add(mntmLoadStars);
 
-		JMenuItem mntmExportToInfoboxes = new JMenuItem("Export to Infoboxes");
-		mntmExportToInfoboxes.addActionListener(new ActionListener() {
+		JMenuItem mntmExportDataSheets = new JMenuItem("Export Data Sheets");
+		mntmExportDataSheets.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				exportToInfoboxes();
+				exportDataSheets();
 			}
 		});
-		mnFile.add(mntmExportToInfoboxes);
+		mnFile.add(mntmExportDataSheets);
 
 		JMenu mnAdd = new JMenu("Add");
 		menuBar.add(mnAdd);
@@ -233,6 +234,27 @@ public class StarGui extends JFrame {
 			}
 		});
 		mnObject.add(mntmSuperMassiveBlack);
+
+		JMenu mnSort = new JMenu("Sort");
+		menuBar.add(mnSort);
+
+		JMenuItem mntmTypeFirst = new JMenuItem("Type First");
+		mntmTypeFirst.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StarGui.this.sortType = SortType.TYPE_FIRST;
+				StarGui.this.updateStarList();
+			}
+		});
+		mnSort.add(mntmTypeFirst);
+
+		JMenuItem mntmNameFirst = new JMenuItem("Name First");
+		mntmNameFirst.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StarGui.this.sortType = SortType.NAME_FIRST;
+				StarGui.this.updateStarList();
+			}
+		});
+		mnSort.add(mntmNameFirst);
 		this.contentPane = new JPanel();
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(this.contentPane);
@@ -279,22 +301,50 @@ public class StarGui extends JFrame {
 				}
 			}
 		});
-
 		scrollPane.setViewportView(this.list);
-
-
 	}
 
-	protected void exportToInfoboxes() {
+	protected void exportDataSheets() {
 		String fName = getSaveFolder();
+		if(fName==null || fName=="") {
+			return;
+		}
 
-		for(Star s:this.stars) {
-			s.toInfobox();
+		try {
+			for(int i=0;i<this.stars.size();i++) {
+				Star s = this.stars.elementAt(i);
+				//Build Name
+				String name = (i+1)+" "+s.toString()+".txt";
+				name = fName+"\\"+name;
+
+				BufferedWriter output = null;
+
+				File file = new File(name);
+				output = new BufferedWriter(new FileWriter(file));
+				
+				String dataSheet = s.dataSheet().replaceAll("\\n", "%n");
+				output.write(String.format(dataSheet));
+				
+				output.close();
+			}
+			JOptionPane.showMessageDialog(this, this.stars.size()+" were exported to the directory \""+fName+"\".", "Exporting", JOptionPane.INFORMATION_MESSAGE);
+			
+		} catch ( IOException e ) {
+			e.printStackTrace();
 		}
 	}
 
-	private static String getSaveFolder() {
-		// TODO Auto-generated method stub
+	private  String getSaveFolder() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Specify a directory to export to");    
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+		int userSelection = fileChooser.showOpenDialog(this);
+
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+			File fileToSave = fileChooser.getSelectedFile();
+			return fileToSave.getAbsolutePath();
+		}
 		return null;
 	}
 
@@ -303,14 +353,14 @@ public class StarGui extends JFrame {
 		if(fName==null || fName=="") {
 			return;
 		}
-		
+
 		try {
 			Path p = new File(fName).toPath();
 			//For each Line Decode and add
 			Files.lines(p,StandardCharsets.UTF_8).map(Star::decode).forEach((s)->{if(s!=null)this.stars.add(s);});
 			Files.lines(p,StandardCharsets.UTF_8).forEach(System.out::println);
 			updateStarList();
-			 JOptionPane.showMessageDialog(this, "The File \""+fName+"\" was sucessfully loaded.", "Loading", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, "The File \""+fName+"\" was sucessfully loaded.", "Loading", JOptionPane.INFORMATION_MESSAGE);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -323,8 +373,8 @@ public class StarGui extends JFrame {
 		int userSelection = fileChooser.showOpenDialog(this);
 
 		if (userSelection == JFileChooser.APPROVE_OPTION) {
-		    File fileToSave = fileChooser.getSelectedFile();
-		    return fileToSave.getAbsolutePath();
+			File fileToSave = fileChooser.getSelectedFile();
+			return fileToSave.getAbsolutePath();
 		}
 		return null;
 	}
@@ -334,7 +384,7 @@ public class StarGui extends JFrame {
 		if(fName==null || fName=="") {
 			return;
 		}
-		
+
 		BufferedWriter output = null;
 		try {
 			File file = new File(fName);
@@ -344,8 +394,8 @@ public class StarGui extends JFrame {
 				output.write(s.encode()+"\n");
 			}
 			output.close();
-			
-			 JOptionPane.showMessageDialog(this, "The File \""+fName+"\" was sucessfully saved.", "Saving", JOptionPane.INFORMATION_MESSAGE);
+
+			JOptionPane.showMessageDialog(this, "The File \""+fName+"\" was sucessfully saved.", "Saving", JOptionPane.INFORMATION_MESSAGE);
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
@@ -358,8 +408,8 @@ public class StarGui extends JFrame {
 		int userSelection = fileChooser.showSaveDialog(this);
 
 		if (userSelection == JFileChooser.APPROVE_OPTION) {
-		    File fileToSave = fileChooser.getSelectedFile();
-		    return fileToSave.getAbsolutePath();
+			File fileToSave = fileChooser.getSelectedFile();
+			return fileToSave.getAbsolutePath();
 		}
 		return null;
 	}
@@ -370,7 +420,7 @@ public class StarGui extends JFrame {
 		if(this.list.getSelectedValue()==null) {
 			this.panel = new JPanel();
 		} else {
-			this.panel = new StarDisplayer(this.list.getSelectedValue());
+			this.panel = new StarDisplayer(this.list.getSelectedValue(),this);
 		}
 
 		this.contentPane.add(this.panel,this.gbc_panel);
@@ -403,7 +453,8 @@ public class StarGui extends JFrame {
 	}
 
 	void updateStarList() {
-		Collections.sort(this.stars,(f1,f2)->f1.toString().compareTo(f2.toString()));
+		Star select = this.list.getSelectedValue();
+		Collections.sort(this.stars,this.sortType.starSorter);
 		DefaultListModel<Star> model = new DefaultListModel<>();
 		for(Star s: this.stars) {
 			model.addElement(s);
@@ -413,6 +464,9 @@ public class StarGui extends JFrame {
 		this.contentPane.validate();
 		this.contentPane.repaint();
 
+		if(select!=null) {
+			this.list.setSelectedValue(select, true);
+		}
 	}
 
 	private OptionalDouble askForDouble(String title,String message,String stdValue) {

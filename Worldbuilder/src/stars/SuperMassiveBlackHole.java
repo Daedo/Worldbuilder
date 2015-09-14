@@ -23,13 +23,8 @@ public class SuperMassiveBlackHole extends BlackHole {
 	}
 	
 	@Override
-	public String toString() {
+	public String starType() {
 		return "Super Massive Black Hole";
-	}
-	
-	@Override
-	public String encode() {
-		return "SuperMassiveBlackHole,"+this.mass+","+this.radius;
 	}
 	
 	@Override

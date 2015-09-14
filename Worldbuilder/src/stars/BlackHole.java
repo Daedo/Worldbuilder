@@ -38,7 +38,7 @@ public class BlackHole extends Star {
 	}
 	
 	@Override
-	public String toString() {
+	public String starType() {
 		return "Black Hole";
 	}
 	
@@ -49,13 +49,12 @@ public class BlackHole extends Star {
 	
 	@Override
 	public String encode() {
-		return "BlackHole,"+this.mass.value+","+this.radius.value+","+this.photosphere.value;
+		return super.encode()+","+this.photosphere.value;
 	}
 
 	@Override
-	public String toInfobox() {
-		// TODO Auto-generated method stub
-		return null;
+	public String dataSheet() {
+		return super.dataSheet()+"\n"+this.photosphere;
 	}
 	
 	@Override
@@ -68,5 +67,11 @@ public class BlackHole extends Star {
 		} else {
 			super.update(valInfo, val);
 		}
+	}
+
+	@Override
+	public String toInfobox() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -26,19 +26,8 @@ public class GiantStar extends Star {
 	}
 
 	@Override
-	public String toString() {
+	public String starType() {
 		return "Giant Star";
-	}
-
-	@Override
-	public String toInfobox() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String encode() {
-		return "GiantStar,"+this.mass.value+","+this.radius.value;
 	}
 	
 	@Override
@@ -50,5 +39,11 @@ public class GiantStar extends Star {
 		} else {
 			super.update(valInfo, val);
 		}
+	}
+
+	@Override
+	public String toInfobox() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

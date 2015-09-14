@@ -184,31 +184,38 @@ public class MainClassStar  extends Star{
 	}
 
 	@Override
+	public String starType() {
+		return "Main Class Star";
+	}
+	
+	@Override
 	public String toString() {
-		String out = "Class "+this.sClass.name()+"Star";
+		String out = "Class "+this.sClass.name()+" Star";
+		if(getName()!="") {
+			out+=" - \""+getName()+"\"";
+		}
 		return out;
 	}
 
 	@Override
 	public String dataSheet() {
-		String out = toString()+"\n"+super.dataSheet()+"\n"+
-				"Luminosity In Suns: "+this.luminosityInSuns+"\n"+
-				"Lifetime In Jears: "+this.lifetimeInYears+"\n"+
-				"Temperature In Kelvin: "+this.temperatureInKelvin+"\n"+
-				"Habitable Zone Inner In AU: "+this.habitableZoneInnerInAU+"\n"+
-				"Habitable Zone Outer In AU: "+this.habitableZoneOuterInAU;
+		String out = super.dataSheet()+"\n"+
+					this.luminosityInSuns+"\n"+
+					this.lifetimeInYears+"\n"+
+					this.temperatureInKelvin+"\n"+
+					this.habitableZoneInnerInAU+"\n"+
+					this.habitableZoneOuterInAU;
 		return out;
 	}
 
 	@Override
 	public String toInfobox() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String encode() {
-		return "MainClassStar,"+this.mass.value+","+this.radius.value+","+this.sClass.name()+","+this.luminosityInSuns.value
+		return super.encode()+this.sClass.name()+","+this.luminosityInSuns.value
 				+","+this.lifetimeInYears.value+","+this.temperatureInKelvin.value+","+
 				this.habitableZoneInnerInAU.value+","+this.habitableZoneOuterInAU.value+","+this.sColor.value.getRGB();
 	}

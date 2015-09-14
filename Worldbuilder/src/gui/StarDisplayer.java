@@ -40,12 +40,14 @@ public class StarDisplayer extends JPanel {
 	private JButton btnApply;
 	private Vector<textValuePair> editables;
 	private Star userStar;
+	private StarGui starGui;
 	/**
 	 * Create the panel.
 	 */
-	public StarDisplayer(Star star) {
+	public StarDisplayer(Star star,StarGui gui) {
 		this.userStar = star;
 		this.editables = new Vector<>();
+		this.starGui = gui;
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
@@ -62,7 +64,7 @@ public class StarDisplayer extends JPanel {
 
 		//Star Infos
 
-		addNonEditableInfo(1, 1,3, "Startype: "+star.toString());
+		addNonEditableInfo(1, 1,3, "Startype: "+star.starType());
 
 		addValueInfo(2, 1, star.name);
 		addValueInfo(1, 2, star.mass);
@@ -138,6 +140,7 @@ public class StarDisplayer extends JPanel {
 				t =  datDoubleValue.value+"";
 			}
 			pair.text.setText(t);
+			pair.text.setCaretPosition(0);
 		}
 		this.btnApply.setEnabled(false);
 	}
@@ -151,6 +154,9 @@ public class StarDisplayer extends JPanel {
 		}
 		
 		resetChanges();
+		
+		//Resort
+		this.starGui.updateStarList();
 	}
 
 	private void addNonEditableInfo(int column,int row,int width, String data) {
