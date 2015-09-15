@@ -10,6 +10,7 @@ import data.DoubleValue;
 import data.UnitValue;
 import data.Value;
 import data.ValueInformation;
+import stars.BlackHole;
 import stars.MainClassStar;
 import stars.Star;
 import java.awt.GridBagLayout;
@@ -69,10 +70,17 @@ public class StarDisplayer extends JPanel {
 		addValueInfo(2, 1, star.name);
 		addValueInfo(1, 2, star.mass);
 		addValueInfo(1, 3, star.radius);
-		addValueInfo(1, 4,  star.getCircumference());
-		addValueInfo(1, 5,  star.getSurfaceArea());
-		addValueInfo(1, 6,  star.getVolume());
-		addValueInfo(1, 7,  star.getDensity());
+		
+		if(!(star instanceof BlackHole)) {
+			addValueInfo(1, 4,  star.getCircumference());
+			addValueInfo(1, 5,  star.getSurfaceArea());
+			addValueInfo(1, 6,  star.getVolume());
+			addValueInfo(1, 7,  star.getDensity());
+		} else {
+			addValueInfo(1, 4,  star.getVolume());
+			addValueInfo(1, 5,  star.getDensity());
+		}
+		
 
 		if(star instanceof MainClassStar) {
 			MainClassStar mainClassStar = (MainClassStar) star;

@@ -24,7 +24,7 @@ public abstract class Star {
 		return new DoubleUnitValue(4/3*Math.PI*r*r*r,"Volume",this.radius.unit+"^3");
 	}
 
-	public DoubleUnitValue getDensity() {
+	public ValueInformation getDensity() {
 		DoubleUnitValue vol = getVolume();
 		double dens = this.mass.value/vol.value;
 		return new DoubleUnitValue(dens,"Density",this.mass.unit+"/"+vol.unit);

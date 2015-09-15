@@ -4,19 +4,20 @@ import data.DoubleUnitValue;
 import data.SolarMass;
 import data.ValueInformation;
 import tools.HelperFunctions;
+import units.Units;
 
 public class NeutronStar extends Star {
 	public static final double MIN_MASS_NEUTRON_STAR = 1.4;
 	public static final double MAX_MASS_NEUTRON_STAR = 3;
-	
+
 	public static final double MIN_RADIUS_NEUTRON_STAR = 10;
 	public static final double MAX_RADIUS_NEUTRON_STAR = 13;
-	
+
 	public NeutronStar() {
 		setMass();
 		setRadius();
 	}
-	
+
 	public NeutronStar(String str) {
 		String[] val = str.split(",");
 		this.mass = new SolarMass(Double.parseDouble(val[1]));
@@ -29,14 +30,14 @@ public class NeutronStar extends Star {
 
 	private void setMass() {
 		this.mass = new SolarMass(HelperFunctions.getRandomRange(MIN_MASS_NEUTRON_STAR, MAX_MASS_NEUTRON_STAR));
-		
+
 	}
 
 	@Override
 	public String starType() {
 		return "Neutron Star";
 	}
-	
+
 	@Override
 	public void update(ValueInformation valInfo, String val) {
 		if(valInfo.equals(this.mass)) {
@@ -54,5 +55,14 @@ public class NeutronStar extends Star {
 	public String toInfobox() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ValueInformation getDensity() {
+		DoubleUnitValue dens = (DoubleUnitValue) super.getDensity();
+		dens.unit = "kg/m^3";
+		dens.value*=Units.MASS_OF_THE_SUN_IN_KG/Units.CUBIC_KILOMETER_IN_CUBIC_METER;
+		
+		return dens;
 	}
 }

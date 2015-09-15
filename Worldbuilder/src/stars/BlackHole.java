@@ -3,6 +3,7 @@ package stars;
 import data.DoubleUnitValue;
 import data.SolarMass;
 import data.SolarRadius;
+import data.Value;
 import data.ValueInformation;
 import tools.HelperFunctions;
 
@@ -30,7 +31,7 @@ public class BlackHole extends Star {
 	}
 
 	protected void setRadius() {
-		this.radius = new SolarRadius(2.95*this.mass.value);
+		this.radius = new DoubleUnitValue(2.95*this.mass.value,"Schwarzschild Radius","Solar Radii");
 	}
 
 	private void setMass() {
@@ -43,8 +44,16 @@ public class BlackHole extends Star {
 	}
 	
 	@Override
-	public DoubleUnitValue getDensity() {
-		return new DoubleUnitValue(0,"Density","A Lot");
+	public ValueInformation getDensity() {
+		return new Value<>("Infinity","Density");
+	}
+	
+	@Override
+	public DoubleUnitValue getVolume() {
+		DoubleUnitValue vol = super.getVolume();
+		vol.value = 0;
+		vol.unit = "m^3";
+		return vol;
 	}
 	
 	@Override
