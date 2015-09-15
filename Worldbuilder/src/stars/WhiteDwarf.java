@@ -4,6 +4,7 @@ import data.DoubleUnitValue;
 import data.SolarMass;
 import data.ValueInformation;
 import tools.HelperFunctions;
+import units.LenghtUnit;
 
 public class WhiteDwarf extends Star {
 	public static final double MIN_MASS_WHITE_DWARF = 0.17;
@@ -15,7 +16,7 @@ public class WhiteDwarf extends Star {
 	}
 
 	private void setRadius() {
-		this.radius = new DoubleUnitValue(Math.pow(this.mass.value, -1.0/3.0),"Radius","Earth Radii",true);
+		this.radius = new DoubleUnitValue(Math.pow(this.mass.value, -1.0/3.0),"Radius",LenghtUnit.EARTH_RADIUS,true);
 	}
 	
 	public WhiteDwarf(String str) {

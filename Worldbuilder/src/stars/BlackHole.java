@@ -6,6 +6,8 @@ import data.SolarRadius;
 import data.Value;
 import data.ValueInformation;
 import tools.HelperFunctions;
+import units.LenghtUnit;
+import units.VolumeUnit;
 
 public class BlackHole extends Star {
 	
@@ -31,7 +33,7 @@ public class BlackHole extends Star {
 	}
 
 	protected void setRadius() {
-		this.radius = new DoubleUnitValue(2.95*this.mass.value,"Schwarzschild Radius","Solar Radii");
+		this.radius = new DoubleUnitValue(2.95*this.mass.value,"Schwarzschild Radius",LenghtUnit.SOLAR_RADIUS);
 	}
 
 	private void setMass() {
@@ -52,7 +54,7 @@ public class BlackHole extends Star {
 	public DoubleUnitValue getVolume() {
 		DoubleUnitValue vol = super.getVolume();
 		vol.value = 0;
-		vol.unit = "m^3";
+		vol.unit = VolumeUnit.METER_CUBED;
 		return vol;
 	}
 	

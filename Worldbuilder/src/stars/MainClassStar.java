@@ -10,6 +10,10 @@ import data.Value;
 import data.ValueInformation;
 import tools.HelperFunctions;
 import tools.MultipointInterpolator;
+import units.LenghtUnit;
+import units.LuminosityUnit;
+import units.TemperatureUnit;
+import units.TimeUnit;
 
 public class MainClassStar  extends Star{
 	public enum StarClass {
@@ -30,6 +34,7 @@ public class MainClassStar  extends Star{
 	private static final double probClassG = 0.076;
 	private static final double probClassK = 0.121;
 
+	@Deprecated
 	private static final double TEMPERATURE_OF_THE_SUN_IN_KELVIN = 5778;
 
 	private static final double EXPONENT_POINT_ONE_SOLAR_MASSES = 2.7;
@@ -156,19 +161,19 @@ public class MainClassStar  extends Star{
 			}
 		}
 
-		this.luminosityInSuns = new DoubleUnitValue(Math.pow(this.mass.value, exponent),"Luminosity","Suns");
+		this.luminosityInSuns = new DoubleUnitValue(Math.pow(this.mass.value, exponent),"Luminosity",LuminosityUnit.SOLAR_LUMINOSITY);
 
-		this.lifetimeInYears = new DoubleUnitValue(this.mass.value/this.luminosityInSuns.value,"Lifetime","Years");
+		this.lifetimeInYears = new DoubleUnitValue(this.mass.value/this.luminosityInSuns.value,"Lifetime",TimeUnit.YEAR);
 
 		double r = this.radius.value;
 		double temp =  Math.pow(this.luminosityInSuns.value/(r*r), 0.25)*TEMPERATURE_OF_THE_SUN_IN_KELVIN;
-		this.temperatureInKelvin = new DoubleUnitValue(temp, "Temperature", "Kelvin");
+		this.temperatureInKelvin = new DoubleUnitValue(temp, "Temperature", TemperatureUnit.KELVIN);
 
 		double hInner				= Math.sqrt(this.luminosityInSuns.value/1.1);
-		this.habitableZoneInnerInAU = new DoubleUnitValue(hInner, "Habitable Zone Inner", "AU");
+		this.habitableZoneInnerInAU = new DoubleUnitValue(hInner, "Habitable Zone Inner", LenghtUnit.AU);
 
 		double hOuter				= Math.sqrt(this.luminosityInSuns.value/0.53);
-		this.habitableZoneOuterInAU = new DoubleUnitValue(hOuter, "Habitable Zone Outer", "AU");
+		this.habitableZoneOuterInAU = new DoubleUnitValue(hOuter, "Habitable Zone Outer", LenghtUnit.AU);
 	}
 
 	private void setColor() {

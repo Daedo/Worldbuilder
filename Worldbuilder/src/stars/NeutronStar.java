@@ -4,6 +4,9 @@ import data.DoubleUnitValue;
 import data.SolarMass;
 import data.ValueInformation;
 import tools.HelperFunctions;
+import units.DensityUnit;
+import units.LenghtUnit;
+import units.Unit;
 import units.Units;
 
 public class NeutronStar extends Star {
@@ -21,11 +24,11 @@ public class NeutronStar extends Star {
 	public NeutronStar(String str) {
 		String[] val = str.split(",");
 		this.mass = new SolarMass(Double.parseDouble(val[1]));
-		this.radius = new DoubleUnitValue( Double.parseDouble(val[2]),"Radius","KM");
+		this.radius = new DoubleUnitValue( Double.parseDouble(val[2]),"Radius",LenghtUnit.KILOMETER);
 	}
 
 	private void setRadius() {
-		this.radius =new DoubleUnitValue( HelperFunctions.getRandomRange(MIN_RADIUS_NEUTRON_STAR, MAX_RADIUS_NEUTRON_STAR),"Radius","KM");
+		this.radius =new DoubleUnitValue( HelperFunctions.getRandomRange(MIN_RADIUS_NEUTRON_STAR, MAX_RADIUS_NEUTRON_STAR),"Radius",LenghtUnit.KILOMETER);
 	}
 
 	private void setMass() {
@@ -60,8 +63,8 @@ public class NeutronStar extends Star {
 	@Override
 	public ValueInformation getDensity() {
 		DoubleUnitValue dens = (DoubleUnitValue) super.getDensity();
-		dens.unit = "kg/m^3";
-		dens.value*=Units.MASS_OF_THE_SUN_IN_KG/Units.CUBIC_KILOMETER_IN_CUBIC_METER;
+		dens.value = Unit.recalculate(dens.value, dens.unit, DensityUnit.KILOGRAM_PER_CUBIC_METER);
+		dens.unit = DensityUnit.KILOGRAM_PER_CUBIC_METER;
 		
 		return dens;
 	}

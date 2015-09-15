@@ -1,24 +1,26 @@
 package data;
 
+import units.Unit;
+
 public class DoubleUnitValue extends DoubleValue {
-	public String unit;
+	public Unit unit;
 
 	public DoubleUnitValue(double val) {
-		this(val,"","");
+		this(val,"",Unit.BASE);
 	}
 
-	public DoubleUnitValue(double val, String descrip, String valUnit) {
+	public DoubleUnitValue(double val, String descrip, Unit valUnit) {
 		super(val,descrip);
 		this.unit = valUnit;
 	}
 	
-	public DoubleUnitValue(double val, String descrip, String valUnit,boolean editable) {
+	public DoubleUnitValue(double val, String descrip, Unit valUnit,boolean editable) {
 		super(val,descrip,editable);
 		this.unit = valUnit;
 	}
 
 	@Override
 	public String toString() {
-		return super.toString()+" "+this.unit;
+		return (super.toString()+" "+this.unit).trim();
 	}
 }

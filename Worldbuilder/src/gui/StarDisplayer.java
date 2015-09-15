@@ -241,11 +241,11 @@ public class StarDisplayer extends JPanel {
 			//Unit
 			if (data instanceof UnitValue) {
 				UnitValue<?> datValue = (UnitValue<?>) data;
-				addNonEditableInfo(column*3, row, datValue.unit);
+				addNonEditableInfo(column*3, row, datValue.unit.toString());
 			}
 			if (data instanceof DoubleUnitValue) {
 				DoubleUnitValue datDoubleValue = (DoubleUnitValue) data;
-				addNonEditableInfo(column*3, row, datDoubleValue.unit);
+				addNonEditableInfo(column*3, row, datDoubleValue.unit.toString());
 			}
 
 		}

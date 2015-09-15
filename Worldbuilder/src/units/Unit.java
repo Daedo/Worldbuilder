@@ -1,7 +1,7 @@
 package units;
 
-public abstract class Unit {
-	//public final static Unit BASE = new Unit(1,"");
+public class Unit {
+	public final static Unit BASE = new Unit(1,"");
 	
 	public double baseUnits;
 	public String unitName;
@@ -15,5 +15,13 @@ public abstract class Unit {
 		return value*oldUnit.baseUnits/newUnit.baseUnits;
 	}
 	
-	public abstract Unit[] values();
+	public Unit[] values() {
+		Unit[] values =  {BASE};
+		return values;
+	}
+	
+	@Override
+	public String toString() {
+		return this.unitName;
+	}
 }

@@ -7,7 +7,7 @@ public class LenghtUnit extends Unit{
 	public static final LenghtUnit EARTH_RADIUS = new LenghtUnit(6_378_137, "R\u2295");
 	public static final LenghtUnit SOLAR_RADIUS = new LenghtUnit(695_600_000, "R\u2299");
 	
-	private LenghtUnit(double base,String name) {
+	protected LenghtUnit(double base,String name) {
 		super(base,name);
 	}
 	

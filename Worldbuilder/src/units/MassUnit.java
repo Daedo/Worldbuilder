@@ -7,7 +7,7 @@ public class MassUnit extends Unit {
 	public static final MassUnit EARTH_MASS = new MassUnit(5_972_198_600_000_000_000_000_000_000d, "M\u2295");
 	public static final MassUnit SOLAR_MASS = new MassUnit(1_988_435_000_000_000_000_000_000_000_000_000d, "M\u2299");
 	
-	private MassUnit(double base,String name) {
+	protected MassUnit(double base,String name) {
 		super(base,name);
 	}
 	

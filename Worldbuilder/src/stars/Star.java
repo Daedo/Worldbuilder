@@ -3,6 +3,11 @@ package stars;
 import data.DoubleUnitValue;
 import data.Value;
 import data.ValueInformation;
+import units.AreaUnit;
+import units.DensityUnit;
+import units.LenghtUnit;
+import units.MassUnit;
+import units.VolumeUnit;
 
 public abstract class Star {
 
@@ -16,18 +21,21 @@ public abstract class Star {
 
 	public DoubleUnitValue getSurfaceArea() {
 		double r = this.radius.value;
-		return new DoubleUnitValue(4*Math.PI*r*r,"Surface Area",this.radius.unit+"^2");
+		AreaUnit unit = AreaUnit.getUnitFromLenght((LenghtUnit)this.radius.unit);
+		return new DoubleUnitValue(4*Math.PI*r*r,"Surface Area",unit);
 	}
 
 	public DoubleUnitValue getVolume() {
 		double r = this.radius.value;
-		return new DoubleUnitValue(4/3*Math.PI*r*r*r,"Volume",this.radius.unit+"^3");
+		VolumeUnit unit = VolumeUnit.getUnitFromLenght((LenghtUnit)this.radius.unit);
+		return new DoubleUnitValue(4/3*Math.PI*r*r*r,"Volume",unit);
 	}
 
 	public ValueInformation getDensity() {
 		DoubleUnitValue vol = getVolume();
 		double dens = this.mass.value/vol.value;
-		return new DoubleUnitValue(dens,"Density",this.mass.unit+"/"+vol.unit);
+		DensityUnit unit = DensityUnit.getUnitFromMassAndVolume((MassUnit)this.mass.unit,(VolumeUnit)vol.unit);
+		return new DoubleUnitValue(dens,"Density",unit);
 	}
 
 	public String dataSheet() {
