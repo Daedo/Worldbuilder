@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
 import java.util.OptionalDouble;
 import java.util.Vector;
 
@@ -36,9 +37,9 @@ import javax.swing.event.ListSelectionListener;
 import stargenerator.Stargenerator;
 import stars.MainClassStar.StarClass;
 import stars.Star;
+import stars.SuperMassiveBlackHole;
 
 public class StarGui extends JFrame {
-
 	/**
 	 * 
 	 */
@@ -74,7 +75,7 @@ public class StarGui extends JFrame {
 		this.stars = new Vector<>();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 640, 480);
+		setBounds(100, 100, 800,600);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -131,8 +132,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmOClassStar = new JMenuItem("O Class Star");
 		mntmOClassStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				StarGui.this.stars.addElement(Stargenerator.generateMainClassStar(StarClass.O));
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateMainClassStar(StarClass.O));
 			}
 		});
 		mnObject.add(mntmOClassStar);
@@ -140,8 +140,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmBClassStar = new JMenuItem("B Class Star");
 		mntmBClassStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateMainClassStar(StarClass.B));
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateMainClassStar(StarClass.B));
 			}
 		});
 		mnObject.add(mntmBClassStar);
@@ -149,8 +148,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmAClassStar = new JMenuItem("A Class Star");
 		mntmAClassStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateMainClassStar(StarClass.A));
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateMainClassStar(StarClass.A));
 			}
 		});
 		mnObject.add(mntmAClassStar);
@@ -158,8 +156,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmFClassStar = new JMenuItem("F Class Star");
 		mntmFClassStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateMainClassStar(StarClass.F));
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateMainClassStar(StarClass.F));
 			}
 		});
 		mnObject.add(mntmFClassStar);
@@ -167,8 +164,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmGClassStar = new JMenuItem("G Class Star");
 		mntmGClassStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateMainClassStar(StarClass.G));
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateMainClassStar(StarClass.G));
 			}
 		});
 		mnObject.add(mntmGClassStar);
@@ -176,8 +172,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmKClassStar = new JMenuItem("K Class Star");
 		mntmKClassStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateMainClassStar(StarClass.K));
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateMainClassStar(StarClass.K));
 			}
 		});
 		mnObject.add(mntmKClassStar);
@@ -185,8 +180,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmMClassStar = new JMenuItem("M Class Star");
 		mntmMClassStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateMainClassStar(StarClass.M));
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateMainClassStar(StarClass.M));
 			}
 		});
 		mnObject.add(mntmMClassStar);
@@ -194,8 +188,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmGiantStar = new JMenuItem("Giant Star");
 		mntmGiantStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateGiantStar());
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateGiantStar());
 			}
 		});
 		mnObject.add(mntmGiantStar);
@@ -203,8 +196,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmWhiteDwraf = new JMenuItem("White Dwarf");
 		mntmWhiteDwraf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateWhiteDwraf());
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateWhiteDwraf());
 			}
 		});
 		mnObject.add(mntmWhiteDwraf);
@@ -212,8 +204,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmNeutronStar = new JMenuItem("Neutron Star");
 		mntmNeutronStar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateNeutronStar());
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateNeutronStar());
 			}
 		});
 		mnObject.add(mntmNeutronStar);
@@ -221,8 +212,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmBlackHole = new JMenuItem("Black Hole");
 		mntmBlackHole.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				StarGui.this.stars.addElement(Stargenerator.generateBlackHole());
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateBlackHole());
 			}
 		});
 		mnObject.add(mntmBlackHole);
@@ -230,8 +220,7 @@ public class StarGui extends JFrame {
 		JMenuItem mntmSuperMassiveBlack = new JMenuItem("Super Massive Black Hole");
 		mntmSuperMassiveBlack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				StarGui.this.stars.addElement(Stargenerator.generateSuperMassiveBlackHole());
-				StarGui.this.updateStarList();
+				StarGui.this.addStarToList(Stargenerator.generateSuperMassiveBlackHole());
 			}
 		});
 		mnObject.add(mntmSuperMassiveBlack);
@@ -284,6 +273,8 @@ public class StarGui extends JFrame {
 		this.contentPane.add(scrollPane, gbc_scrollPane);
 
 		this.list = new JList<>();
+		//Little Hack to get a nice minimum width 
+		this.list.setPrototypeCellValue(new SuperMassiveBlackHole());
 		this.list.setModel(new DefaultListModel<>());
 		this.list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -296,8 +287,11 @@ public class StarGui extends JFrame {
 			public void keyPressed(KeyEvent arg0) {
 				if(arg0.getKeyCode()==KeyEvent.VK_DELETE && !StarGui.this.list.isSelectionEmpty()) {
 					DefaultListModel<Star> model = (DefaultListModel<Star>) StarGui.this.list.getModel();
-					int selectedIndex = StarGui.this.list.getSelectedIndex();
-					model.remove(selectedIndex);
+					List<Star> rem = StarGui.this.list.getSelectedValuesList();
+					//int selectedIndex = StarGui.this.list.getSelectedIndex();
+					for(Star s:rem) {
+						model.removeElement(s);
+					}
 					StarGui.this.updatePanel();
 				}
 			}
@@ -322,14 +316,14 @@ public class StarGui extends JFrame {
 
 				File file = new File(name);
 				output = new BufferedWriter(new FileWriter(file));
-				
+
 				String dataSheet = s.dataSheet().replaceAll("\\n", "%n");
 				output.write(String.format(dataSheet));
-				
+
 				output.close();
 			}
 			JOptionPane.showMessageDialog(this, this.stars.size()+" were exported to the directory \""+fName+"\".", "Exporting", JOptionPane.INFORMATION_MESSAGE);
-			
+
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
@@ -453,6 +447,12 @@ public class StarGui extends JFrame {
 
 	}
 
+	void addStarToList(Star star) {
+		this.stars.addElement(star);
+		updateStarList();
+		this.list.setSelectedValue(star, true);
+	}
+	
 	void updateStarList() {
 		Star select = this.list.getSelectedValue();
 		Collections.sort(this.stars,this.sortType.starSorter);

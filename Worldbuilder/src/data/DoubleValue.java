@@ -23,4 +23,8 @@ public class DoubleValue extends ValueInformation{
 	public String toString() {
 		return super.toString()+HelperFunctions.round(this.value,4);
 	}
+	
+	public double getBaseValue() {
+		return this.value;
+	}
 }

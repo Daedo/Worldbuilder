@@ -6,7 +6,8 @@ public class VolumeUnit extends AreaUnit {
 	public static final VolumeUnit AU_CUBED = new VolumeUnit(AU_SQUARED.baseUnits*AU.baseUnits, "AU³");
 	public static final VolumeUnit EARTH_RADIUS_CUBED = new VolumeUnit(EARTH_RADIUS_SQUARED.baseUnits*EARTH_RADIUS.baseUnits, "R\u2295³");
 	public static final VolumeUnit SOLAR_RADIUS_CUBED = new VolumeUnit(SOLAR_RADIUS_SQUARED.baseUnits*SOLAR_RADIUS.baseUnits, "R\u2299³");
-	
+	public static final VolumeUnit SOLAR_VOLUME = new VolumeUnit(1_412_000_000_000_000_000_000_000_000d, "V\u2299");
+	public static final VolumeUnit EARTH_VOLUME = new VolumeUnit(1_083_000_000_000_000_000_000d, "V\u2295");
 	
 	protected VolumeUnit(double base, String name) {
 		super(base, name);
@@ -14,7 +15,7 @@ public class VolumeUnit extends AreaUnit {
 
 	@Override
 	public VolumeUnit[] values() {
-		VolumeUnit[] values = {METER_CUBED,KILOMETER_CUBED,AU_CUBED,EARTH_RADIUS_CUBED,SOLAR_RADIUS_CUBED};
+		VolumeUnit[] values = {METER_CUBED,KILOMETER_CUBED,AU_CUBED,EARTH_RADIUS_CUBED,SOLAR_RADIUS_CUBED,SOLAR_VOLUME,EARTH_VOLUME};
 		return values;
 	}
 	

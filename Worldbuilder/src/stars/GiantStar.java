@@ -4,6 +4,9 @@ import data.SolarMass;
 import data.SolarRadius;
 import data.ValueInformation;
 import tools.HelperFunctions;
+import units.LenghtUnit;
+import units.MassUnit;
+import units.Unit;
 
 public class GiantStar extends Star {
 	public static final double MIN_MASS_GIANT_STAR = 50;
@@ -21,8 +24,10 @@ public class GiantStar extends Star {
 
 	public GiantStar(String str) {
 		String[] val = str.split(",");
-		this.mass = new SolarMass(Double.parseDouble(val[1]));
-		this.radius = new SolarRadius( Double.parseDouble(val[2]));
+		double baseMass = Double.parseDouble(val[1]);
+		this.mass = new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
+		double baseRadius = Double.parseDouble(val[2]);
+		this.radius = new SolarRadius(Unit.toUnit(baseRadius, LenghtUnit.SOLAR_RADIUS));
 	}
 
 	@Override

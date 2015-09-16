@@ -23,4 +23,9 @@ public class DoubleUnitValue extends DoubleValue {
 	public String toString() {
 		return (super.toString()+" "+this.unit).trim();
 	}
+	
+	@Override
+	public double getBaseValue() {
+		return super.getBaseValue()*this.unit.baseUnits;
+	}
 }

@@ -12,8 +12,10 @@ import tools.HelperFunctions;
 import tools.MultipointInterpolator;
 import units.LenghtUnit;
 import units.LuminosityUnit;
+import units.MassUnit;
 import units.TemperatureUnit;
 import units.TimeUnit;
+import units.Unit;
 
 public class MainClassStar  extends Star{
 	public enum StarClass {
@@ -76,7 +78,9 @@ public class MainClassStar  extends Star{
 
 	public MainClassStar(String str) {
 		String[] val = str.split(",");
-		this.mass = new SolarMass(Double.parseDouble(val[1]));
+		
+		double baseMass = Double.parseDouble(val[1]);
+		this.mass = new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
 		this.sClass = StarClass.valueOf(val[3]);
 		setRadius();
 		setMainStarData();
@@ -220,9 +224,9 @@ public class MainClassStar  extends Star{
 
 	@Override
 	public String encode() {
-		return super.encode()+this.sClass.name()+","+this.luminosityInSuns.value
-				+","+this.lifetimeInYears.value+","+this.temperatureInKelvin.value+","+
-				this.habitableZoneInnerInAU.value+","+this.habitableZoneOuterInAU.value+","+this.sColor.value.getRGB();
+		return super.encode()+this.sClass.name()+","+this.luminosityInSuns.getBaseValue()
+				+","+this.lifetimeInYears.getBaseValue()+","+this.temperatureInKelvin.getBaseValue()+","+
+				this.habitableZoneInnerInAU.getBaseValue()+","+this.habitableZoneOuterInAU.getBaseValue()+","+this.sColor.value.getRGB();
 	}
 
 	@Override

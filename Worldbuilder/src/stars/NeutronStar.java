@@ -6,8 +6,8 @@ import data.ValueInformation;
 import tools.HelperFunctions;
 import units.DensityUnit;
 import units.LenghtUnit;
+import units.MassUnit;
 import units.Unit;
-import units.Units;
 
 public class NeutronStar extends Star {
 	public static final double MIN_MASS_NEUTRON_STAR = 1.4;
@@ -23,8 +23,10 @@ public class NeutronStar extends Star {
 
 	public NeutronStar(String str) {
 		String[] val = str.split(",");
-		this.mass = new SolarMass(Double.parseDouble(val[1]));
-		this.radius = new DoubleUnitValue( Double.parseDouble(val[2]),"Radius",LenghtUnit.KILOMETER);
+		double baseMass = Double.parseDouble(val[1]);
+		this.mass = new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
+		double baseRadius = Double.parseDouble(val[2]);
+		this.radius = new DoubleUnitValue( Unit.toUnit(baseRadius, LenghtUnit.KILOMETER) ,"Radius",LenghtUnit.KILOMETER);
 	}
 
 	private void setRadius() {

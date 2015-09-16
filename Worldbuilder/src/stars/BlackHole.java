@@ -7,6 +7,8 @@ import data.Value;
 import data.ValueInformation;
 import tools.HelperFunctions;
 import units.LenghtUnit;
+import units.MassUnit;
+import units.Unit;
 import units.VolumeUnit;
 
 public class BlackHole extends Star {
@@ -23,7 +25,8 @@ public class BlackHole extends Star {
 
 	public BlackHole(String str) {
 		String[] val = str.split(",");
-		this.mass = new SolarMass(Double.parseDouble(val[1]));
+		double baseMass = Double.parseDouble(val[1]);
+		this.mass = new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
 		setRadius();
 		setPhotosphere();
 	}
@@ -60,7 +63,7 @@ public class BlackHole extends Star {
 	
 	@Override
 	public String encode() {
-		return super.encode()+","+this.photosphere.value;
+		return super.encode()+","+this.photosphere.getBaseValue();
 	}
 
 	@Override

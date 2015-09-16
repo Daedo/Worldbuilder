@@ -49,8 +49,9 @@ public abstract class Star {
 
 	public abstract String toInfobox();
 
+	//TODO Add getValue in Encodes, add Units in decoding
 	public String encode() {
-		return starType()+","+this.mass.value+","+this.radius.value+","+this.name.value;
+		return starType()+","+this.mass.getBaseValue()+","+this.radius.getBaseValue()+","+this.name.value;
 	}
 
 	public static Star decode(String str) {
