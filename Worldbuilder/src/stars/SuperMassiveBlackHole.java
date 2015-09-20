@@ -3,10 +3,12 @@ package stars;
 import data.SolarMass;
 import data.ValueInformation;
 import tools.HelperFunctions;
+import units.MassUnit;
+import units.Unit;
 
 public class SuperMassiveBlackHole extends BlackHole {
-	public static final double MIN_MASS_SUPER_MASSIVE_BLACK_HOLE = 100_000;
-	public static final double MAX_MASS_SUPER_MASSIVE_BLACK_HOLE = 10_000_000_000d;
+	public static final double MIN_MASS_SUPER_MASSIVE_BLACK_HOLE = Unit.fromUnit(100_000,MassUnit.SOLAR_MASS);
+	public static final double MAX_MASS_SUPER_MASSIVE_BLACK_HOLE = Unit.fromUnit(10_000_000_000d,MassUnit.SOLAR_MASS);
 	
 	public SuperMassiveBlackHole() {
 		setMass();
@@ -19,7 +21,8 @@ public class SuperMassiveBlackHole extends BlackHole {
 	}
 
 	private void setMass() {
-		this.mass = new SolarMass(HelperFunctions.getRandomRange(MIN_MASS_SUPER_MASSIVE_BLACK_HOLE, MAX_MASS_SUPER_MASSIVE_BLACK_HOLE));
+		double baseMass = HelperFunctions.getRandomRange(MIN_MASS_SUPER_MASSIVE_BLACK_HOLE, MAX_MASS_SUPER_MASSIVE_BLACK_HOLE);
+		this.mass = new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
 	}
 	
 	@Override
@@ -30,8 +33,7 @@ public class SuperMassiveBlackHole extends BlackHole {
 	@Override
 	public void update(ValueInformation valInfo, String val) {
 		if(valInfo.equals(this.mass)) {
-			double newMass = HelperFunctions.parseDefault(val,this.mass.value);
-			this.mass.value = HelperFunctions.linearClamp(newMass,MIN_MASS_SUPER_MASSIVE_BLACK_HOLE,MAX_MASS_SUPER_MASSIVE_BLACK_HOLE);
+			this.mass.value = HelperFunctions.parseDefaultClapToUnit(val, this.mass.value, MIN_MASS_SUPER_MASSIVE_BLACK_HOLE, MAX_MASS_SUPER_MASSIVE_BLACK_HOLE, MassUnit.SOLAR_MASS);
 			setRadius();
 			setPhotosphere();
 		} else {

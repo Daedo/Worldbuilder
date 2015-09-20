@@ -34,4 +34,7 @@ public class AreaUnit extends LenghtUnit {
 		return null;
 	}
 
+	public static AreaUnit getBaseUnit() {
+		return METER_SQUARED;
+	}
 }

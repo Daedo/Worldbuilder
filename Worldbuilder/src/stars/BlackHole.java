@@ -2,7 +2,6 @@ package stars;
 
 import data.DoubleUnitValue;
 import data.SolarMass;
-import data.SolarRadius;
 import data.Value;
 import data.ValueInformation;
 import tools.HelperFunctions;
@@ -13,8 +12,8 @@ import units.VolumeUnit;
 
 public class BlackHole extends Star {
 	
-	public static final double MIN_MASS_BLACK_HOLE = 5;
-	public static final double MAX_MASS_BLACK_HOLE = 500;
+	public static final double MIN_MASS_BLACK_HOLE = Unit.fromUnit(5, MassUnit.SOLAR_MASS);
+	public static final double MAX_MASS_BLACK_HOLE = Unit.fromUnit(500, MassUnit.SOLAR_MASS);
 	
 	public DoubleUnitValue photosphere;
 	public BlackHole() {
@@ -40,7 +39,8 @@ public class BlackHole extends Star {
 	}
 
 	private void setMass() {
-		this.mass= new SolarMass(HelperFunctions.getRandomRange(MIN_MASS_BLACK_HOLE, MAX_MASS_BLACK_HOLE));
+		double baseMass = HelperFunctions.getRandomRange(MIN_MASS_BLACK_HOLE, MAX_MASS_BLACK_HOLE);
+		this.mass= new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
 	}
 	
 	@Override
@@ -74,8 +74,7 @@ public class BlackHole extends Star {
 	@Override
 	public void update(ValueInformation valInfo, String val) {
 		if(valInfo.equals(this.mass)) {
-			double newMass = HelperFunctions.parseDefault(val,this.mass.value);
-			this.mass.value = HelperFunctions.linearClamp(newMass,MIN_MASS_BLACK_HOLE,MAX_MASS_BLACK_HOLE);
+			this.mass.value = HelperFunctions.parseDefaultClapToUnit(val, this.mass.getBaseValue(), MIN_MASS_BLACK_HOLE, MAX_MASS_BLACK_HOLE, this.mass.unit);
 			setRadius();
 			setPhotosphere();
 		} else {

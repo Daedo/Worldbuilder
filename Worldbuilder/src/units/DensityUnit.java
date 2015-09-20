@@ -29,4 +29,8 @@ public class DensityUnit extends MassUnit {
 		}
 		return null;
 	}
+	
+	public static DensityUnit getBaseUnit() {
+		return GRAM_PER_CUBIC_METER;
+	}
 }

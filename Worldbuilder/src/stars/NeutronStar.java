@@ -10,11 +10,11 @@ import units.MassUnit;
 import units.Unit;
 
 public class NeutronStar extends Star {
-	public static final double MIN_MASS_NEUTRON_STAR = 1.4;
-	public static final double MAX_MASS_NEUTRON_STAR = 3;
+	public static final double MIN_MASS_NEUTRON_STAR = Unit.fromUnit(1.4, MassUnit.SOLAR_MASS);
+	public static final double MAX_MASS_NEUTRON_STAR = Unit.fromUnit(3, MassUnit.SOLAR_MASS);
 
-	public static final double MIN_RADIUS_NEUTRON_STAR = 10;
-	public static final double MAX_RADIUS_NEUTRON_STAR = 13;
+	public static final double MIN_RADIUS_NEUTRON_STAR = Unit.fromUnit(10, LenghtUnit.KILOMETER);
+	public static final double MAX_RADIUS_NEUTRON_STAR = Unit.fromUnit(13, LenghtUnit.KILOMETER);
 
 	public NeutronStar() {
 		setMass();
@@ -30,11 +30,13 @@ public class NeutronStar extends Star {
 	}
 
 	private void setRadius() {
-		this.radius =new DoubleUnitValue( HelperFunctions.getRandomRange(MIN_RADIUS_NEUTRON_STAR, MAX_RADIUS_NEUTRON_STAR),"Radius",LenghtUnit.KILOMETER);
+		double baseRadius = HelperFunctions.getRandomRange(MIN_RADIUS_NEUTRON_STAR, MAX_RADIUS_NEUTRON_STAR);
+		this.radius =new DoubleUnitValue( Unit.toUnit(baseRadius,LenghtUnit.KILOMETER),"Radius",LenghtUnit.KILOMETER);
 	}
 
 	private void setMass() {
-		this.mass = new SolarMass(HelperFunctions.getRandomRange(MIN_MASS_NEUTRON_STAR, MAX_MASS_NEUTRON_STAR));
+		double baseMass = HelperFunctions.getRandomRange(MIN_MASS_NEUTRON_STAR, MAX_MASS_NEUTRON_STAR);
+		this.mass = new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
 
 	}
 
@@ -46,11 +48,9 @@ public class NeutronStar extends Star {
 	@Override
 	public void update(ValueInformation valInfo, String val) {
 		if(valInfo.equals(this.mass)) {
-			double newMass = HelperFunctions.parseDefault(val,this.mass.value);
-			this.mass.value = HelperFunctions.linearClamp(newMass,MIN_MASS_NEUTRON_STAR,MAX_MASS_NEUTRON_STAR);
+			this.mass.value = HelperFunctions.parseDefaultClapToUnit(val, this.mass.value, MIN_MASS_NEUTRON_STAR, MAX_MASS_NEUTRON_STAR, MassUnit.SOLAR_MASS);
 		} else if(valInfo.equals(this.radius)) {
-			double newRadius = HelperFunctions.parseDefault(val,this.radius.value);
-			this.mass.value = HelperFunctions.linearClamp(newRadius,MIN_RADIUS_NEUTRON_STAR,MAX_RADIUS_NEUTRON_STAR);
+			this.radius.value = HelperFunctions.parseDefaultClapToUnit(val, this.radius.value, MIN_RADIUS_NEUTRON_STAR, MAX_RADIUS_NEUTRON_STAR, LenghtUnit.KILOMETER);
 		} else {
 			super.update(valInfo, val);
 		}

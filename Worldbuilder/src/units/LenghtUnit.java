@@ -15,4 +15,8 @@ public class LenghtUnit extends Unit{
 		LenghtUnit[] units = {METER,KILOMETER,AU,EARTH_RADIUS,SOLAR_RADIUS};
 		return units;
 	}
+	
+	public static LenghtUnit getBaseUnit() {
+		return METER;
+	}
 }

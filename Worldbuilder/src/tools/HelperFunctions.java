@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
+import units.Unit;
+
 public class HelperFunctions {
 
 	public static double getRandomRange(double inlusiveLower,double exclusiveUpper) {
@@ -49,5 +51,10 @@ public class HelperFunctions {
 		if(val<min) return min;
 		if(val>max) return max;
 		return val;
+	}
+	
+	public static double parseDefaultClapToUnit(String str,double defaultVal,double min,double max,Unit newUnit) {
+		double out = parseDefault(str, defaultVal);
+		return Unit.toUnit(linearClamp(out, min, max),newUnit);
 	}
 }

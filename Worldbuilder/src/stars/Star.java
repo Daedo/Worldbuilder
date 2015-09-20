@@ -7,6 +7,7 @@ import units.AreaUnit;
 import units.DensityUnit;
 import units.LenghtUnit;
 import units.MassUnit;
+import units.Unit;
 import units.VolumeUnit;
 
 public abstract class Star {
@@ -100,4 +101,5 @@ public abstract class Star {
 		}
 		return out;
 	}
+
 }

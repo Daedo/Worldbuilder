@@ -33,4 +33,8 @@ public class VolumeUnit extends AreaUnit {
 		} 
 		return null;
 	}
+	
+	public static VolumeUnit getBaseUnit() {
+		return METER_CUBED;
+	}
 }

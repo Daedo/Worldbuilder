@@ -17,4 +17,7 @@ public class MassUnit extends Unit {
 		return values;
 	}
 
+	public static MassUnit getBaseUnit() {
+		return GRAM;
+	}
 }

@@ -13,4 +13,8 @@ public class LuminosityUnit extends Unit {
 		LuminosityUnit[] values = {WATT,SOLAR_LUMINOSITY};
 		return values;
 	}
+	
+	public static LuminosityUnit getBaseUnit() {
+		return WATT;
+	}
 }

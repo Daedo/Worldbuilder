@@ -16,4 +16,8 @@ public class TimeUnit extends Unit{
 		TimeUnit[] values = {SECOND,MINUTE,HOUR,DAY,YEAR};
 		return values;
 	}
+	
+	public static TimeUnit getBaseUnit() {
+		return SECOND;
+	}
 }

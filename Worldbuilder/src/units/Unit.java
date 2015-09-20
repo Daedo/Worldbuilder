@@ -16,12 +16,20 @@ public class Unit {
 	}
 	
 	public static double toUnit(double value,Unit newUnit) {
-		return value*newUnit.baseUnits;
+		return value/newUnit.baseUnits;
+	}
+	
+	public static double fromUnit(double value,Unit oldUnit) {
+		return value*oldUnit.baseUnits;
 	}
 	
 	public Unit[] values() {
 		Unit[] values =  {BASE};
 		return values;
+	}
+	
+	public static Unit getBaseUnit() {
+		return BASE;
 	}
 	
 	@Override

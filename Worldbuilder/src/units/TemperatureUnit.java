@@ -14,4 +14,8 @@ public class TemperatureUnit extends Unit {
 		TemperatureUnit[] values = {KELVIN,SOLAR_TEMPERATURE};
 		return values;
 	}
+	
+	public static TemperatureUnit getBaseUnit() {
+		return KELVIN;
+	}
 }

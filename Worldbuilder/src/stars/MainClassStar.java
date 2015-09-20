@@ -36,9 +36,6 @@ public class MainClassStar  extends Star{
 	private static final double probClassG = 0.076;
 	private static final double probClassK = 0.121;
 
-	@Deprecated
-	private static final double TEMPERATURE_OF_THE_SUN_IN_KELVIN = 5778;
-
 	private static final double EXPONENT_POINT_ONE_SOLAR_MASSES = 2.7;
 	private static final double EXPONENT_ONE_SOLAR_MASS = 4.7;
 	private static final double EXPONENT_TEN_SOLAR_MASSES = 3;
@@ -52,8 +49,8 @@ public class MainClassStar  extends Star{
 	private static final Color COLOR_THREE_POINT_SEVEN_THOUSAND_KELVIN = Color.decode("#FFD2A1");
 	private static final Color COLOR_TWO_POINT_FOUR_THOUSAND_KELVIN = Color.decode("#FFCC6F");
 
-	public static final double MIN_MASS_STAR = 0.08;
-	public static final double MAX_MASS_STAR = 50;
+	public static final double MIN_MASS_STAR = Unit.fromUnit(0.08, MassUnit.SOLAR_MASS);
+	public static final double MAX_MASS_STAR = Unit.fromUnit(50, MassUnit.SOLAR_MASS);
 
 	public StarClass sClass;
 	public DoubleUnitValue luminosityInSuns,lifetimeInYears,temperatureInKelvin;
@@ -170,7 +167,7 @@ public class MainClassStar  extends Star{
 		this.lifetimeInYears = new DoubleUnitValue(this.mass.value/this.luminosityInSuns.value,"Lifetime",TimeUnit.YEAR);
 
 		double r = this.radius.value;
-		double temp =  Math.pow(this.luminosityInSuns.value/(r*r), 0.25)*TEMPERATURE_OF_THE_SUN_IN_KELVIN;
+		double temp =  Unit.recalculate(Math.pow(this.luminosityInSuns.value/(r*r), 0.25),TemperatureUnit.SOLAR_TEMPERATURE,TemperatureUnit.KELVIN);
 		this.temperatureInKelvin = new DoubleUnitValue(temp, "Temperature", TemperatureUnit.KELVIN);
 
 		double hInner				= Math.sqrt(this.luminosityInSuns.value/1.1);
@@ -232,8 +229,7 @@ public class MainClassStar  extends Star{
 	@Override
 	public void update(ValueInformation valInfo, String val) {
 		if(valInfo.equals(this.mass)) {
-			double newMass = HelperFunctions.parseDefault(val,this.mass.value);
-			this.mass.value = HelperFunctions.linearClamp(newMass,MIN_MASS_STAR,MAX_MASS_STAR);
+			this.mass.value = HelperFunctions.parseDefaultClapToUnit(val, this.mass.value, MIN_MASS_STAR, MAX_MASS_STAR, this.mass.unit);
 			findClass();
 			setRadius();
 			setMainStarData();
