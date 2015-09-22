@@ -1,6 +1,7 @@
 package stars;
 
 import data.DoubleUnitValue;
+import data.LimitedDoubleUnitValue;
 import data.SolarMass;
 import data.Value;
 import data.ValueInformation;
@@ -12,35 +13,74 @@ import units.VolumeUnit;
 
 public class BlackHole extends Star {
 	
-	public static final double MIN_MASS_BLACK_HOLE = Unit.fromUnit(5, MassUnit.SOLAR_MASS);
-	public static final double MAX_MASS_BLACK_HOLE = Unit.fromUnit(500, MassUnit.SOLAR_MASS);
+	public static final DoubleUnitValue MIN_MASS_BLACK_HOLE = DoubleUnitValue.createFromUnitValue(5, MassUnit.SOLAR_MASS);
+	public static final DoubleUnitValue MAX_MASS_BLACK_HOLE = DoubleUnitValue.createFromUnitValue(500, MassUnit.SOLAR_MASS);
 	
-	public DoubleUnitValue photosphere;
+	private DoubleUnitValue photosphere,schwarzschildRadius;
+	
+	
 	public BlackHole() {
 		setMass();
-		setRadius();
+		setSchwarzschildRadius();
 		setPhotosphere();
 	}
 
 	public BlackHole(String str) {
 		String[] val = str.split(",");
 		double baseMass = Double.parseDouble(val[1]);
-		this.mass = new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
-		setRadius();
+		Unit massUnit = MassUnit.parseUnit(val[2]);
+		this.mass = new LimitedDoubleUnitValue(baseMass, "Mass", massUnit, true, MIN_MASS_BLACK_HOLE, MAX_MASS_BLACK_HOLE, this::notifyMassChange);
+		
+		setSchwarzschildRadius();
+		getRadius().setUnit(LenghtUnit.parseUnit(val[6]));
+		
 		setPhotosphere();
+		getPhotosphere().setUnit(LenghtUnit.parseUnit(val[8]));
 	}
 
 	protected void setPhotosphere() {
-		this.photosphere = new DoubleUnitValue(1.5*this.radius.value,"Photosphere",this.radius.unit);
+		Unit pUnit = null;
+		if(this.photosphere!=null) {
+			pUnit = this.photosphere.getUnit();
+		}
+		
+		this.photosphere = DoubleUnitValue.createFromUnitValue(1.5*this.schwarzschildRadius.getUnitValue(),"Photosphere",this.schwarzschildRadius.getUnit());
+		
+		if(pUnit!=null) {
+			this.photosphere.setUnit(pUnit);
+		}
 	}
 
-	protected void setRadius() {
-		this.radius = new DoubleUnitValue(2.95*this.mass.value,"Schwarzschild Radius",LenghtUnit.SOLAR_RADIUS);
+	protected void setSchwarzschildRadius() {
+		Unit sUnit = null;
+		if(this.schwarzschildRadius!=null) {
+			sUnit = this.schwarzschildRadius.getUnit();
+		}
+		
+		this.schwarzschildRadius = DoubleUnitValue.createFromUnitValue(2.95*this.mass.getUnitValue(),"Schwarzschild Radius",LenghtUnit.KILOMETER);
+		
+		if(sUnit!=null) {
+			this.schwarzschildRadius.setUnit(sUnit);
+		}
+	}
+	
+	public DoubleUnitValue getSchwarzschildRadius() {
+		return this.photosphere;
+	}
+	
+	public DoubleUnitValue getPhotosphere() {
+		return this.photosphere;
 	}
 
 	private void setMass() {
 		double baseMass = HelperFunctions.getRandomRange(MIN_MASS_BLACK_HOLE, MAX_MASS_BLACK_HOLE);
-		this.mass= new SolarMass(Unit.toUnit(baseMass, MassUnit.SOLAR_MASS));
+		this.mass= new SolarMass(baseMass,MIN_MASS_BLACK_HOLE,MAX_MASS_BLACK_HOLE,this::notifyMassChange);
+	}
+	
+	
+	public void notifyMassChange() {
+		setSchwarzschildRadius();
+		setPhotosphere();
 	}
 	
 	@Override
@@ -56,31 +96,23 @@ public class BlackHole extends Star {
 	@Override
 	public DoubleUnitValue getVolume() {
 		DoubleUnitValue vol = super.getVolume();
-		vol.value = 0;
-		vol.unit = VolumeUnit.METER_CUBED;
+		vol.setBaseValue(0);
+		vol.setUnit(VolumeUnit.METER_CUBED);
 		return vol;
 	}
 	
 	@Override
 	public String encode() {
-		return super.encode()+","+this.photosphere.getBaseValue();
+		return super.encode()+","+encodeValue(this.schwarzschildRadius)+","+encodeValue(this.photosphere);
 	}
 
 	@Override
 	public String dataSheet() {
-		return super.dataSheet()+"\n"+this.photosphere;
+		return super.dataSheet()+"\n"+
+				this.schwarzschildRadius+"\n"+
+				this.photosphere;
 	}
 	
-	@Override
-	public void update(ValueInformation valInfo, String val) {
-		if(valInfo.equals(this.mass)) {
-			this.mass.value = HelperFunctions.parseDefaultClapToUnit(val, this.mass.getBaseValue(), MIN_MASS_BLACK_HOLE, MAX_MASS_BLACK_HOLE, this.mass.unit);
-			setRadius();
-			setPhotosphere();
-		} else {
-			super.update(valInfo, val);
-		}
-	}
 
 	@Override
 	public String toInfobox() {

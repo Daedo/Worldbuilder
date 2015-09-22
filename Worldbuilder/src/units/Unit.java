@@ -32,6 +32,10 @@ public class Unit {
 		return BASE;
 	}
 	
+	public static Unit parseUnit(String unit) {
+		return BASE;
+	}
+	
 	@Override
 	public String toString() {
 		return this.unitName;

@@ -20,8 +20,8 @@ public class MultipointInterpolator<T> {
 		}
 	}
 	
-	Interpolator<T> interpolator;
-	Vector<DoublePair<T>> vals;
+	private Interpolator<T> interpolator;
+	private Vector<DoublePair<T>> vals;
 	
 	
 	public MultipointInterpolator(Interpolator<T> interp) {
@@ -34,7 +34,7 @@ public class MultipointInterpolator<T> {
 		Collections.sort(this.vals);
 	}
 	
-	public T getLerp(double pos) {
+	public T getInterpolation(double pos) {
 		
 		for(int i=0;i<this.vals.size();i++) {
 			DoublePair<T> currentPair = this.vals.get(i);

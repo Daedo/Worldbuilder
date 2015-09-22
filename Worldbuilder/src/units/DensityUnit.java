@@ -27,7 +27,7 @@ public class DensityUnit extends MassUnit {
 		} else if(unit.equals(SOLAR_MASS) && unit2.equals(VolumeUnit.EARTH_RADIUS_CUBED)) {
 			return SOLAR_MASS_PER_CUBIC_EARTH_RADIUS;
 		}
-		return null;
+		return getBaseUnit();
 	}
 	
 	public static DensityUnit getBaseUnit() {

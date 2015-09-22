@@ -31,7 +31,7 @@ public class AreaUnit extends LenghtUnit {
 		} else if(unit.equals(SOLAR_RADIUS)) {
 			return SOLAR_RADIUS_SQUARED;
 		} 
-		return null;
+		return getBaseUnit();
 	}
 
 	public static AreaUnit getBaseUnit() {

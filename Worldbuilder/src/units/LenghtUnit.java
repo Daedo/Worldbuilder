@@ -19,4 +19,20 @@ public class LenghtUnit extends Unit{
 	public static LenghtUnit getBaseUnit() {
 		return METER;
 	}
+	
+	public static LenghtUnit parseUnit(String unit) {
+		switch (unit) {
+		case "R\u2299":
+			return SOLAR_RADIUS;
+		case "R\u2295":
+			return EARTH_RADIUS;
+		case "AU":
+			return AU;
+		case "km":
+			return KILOMETER;
+		case "m":
+		default:
+			return METER;
+		}
+	}
 }

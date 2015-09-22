@@ -31,7 +31,7 @@ public class VolumeUnit extends AreaUnit {
 		} else if(unit.equals(SOLAR_RADIUS)) {
 			return SOLAR_RADIUS_CUBED;
 		} 
-		return null;
+		return getBaseUnit();
 	}
 	
 	public static VolumeUnit getBaseUnit() {

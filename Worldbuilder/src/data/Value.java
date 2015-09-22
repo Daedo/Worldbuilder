@@ -21,4 +21,12 @@ public class Value<T> extends ValueInformation{
 	public String toString() {
 		return super.toString()+this.value;
 	}
+
+	public T getValue() {
+		return this.value;
+	}
+	
+	public void setValue(T newValue) {
+		this.value = newValue;
+	}
 }

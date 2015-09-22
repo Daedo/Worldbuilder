@@ -8,6 +8,7 @@ import stars.GiantStar;
 import stars.MainClassStar;
 import stars.NeutronStar;
 import stars.MainClassStar.StarClass;
+import tools.HelperFunctions;
 import stars.Star;
 import stars.SuperMassiveBlackHole;
 import stars.WhiteDwarf;
@@ -45,6 +46,7 @@ public class Stargenerator {
 	}
 
 	public static GiantStar generateGiantStar() {
+		
 		return new GiantStar();
 	}
 

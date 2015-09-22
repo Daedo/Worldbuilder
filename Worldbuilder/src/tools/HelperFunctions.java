@@ -5,14 +5,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Random;
 
+import data.DoubleUnitValue;
 import units.Unit;
 
 public class HelperFunctions {
 
-	public static double getRandomRange(double inlusiveLower,double exclusiveUpper) {
-		double div = exclusiveUpper-inlusiveLower;
+	public static double getRandomRange(double inclusiveLower,double exclusiveUpper) {
+		double div = exclusiveUpper-inclusiveLower;
 		Random rnd = new Random();
-		return inlusiveLower+rnd.nextDouble()*div;
+		return inclusiveLower+rnd.nextDouble()*div;
+	}
+	
+	public static double getRandomRange(DoubleUnitValue inclusiveLower,DoubleUnitValue exclusiveUpper) {
+		return HelperFunctions.getRandomRange(inclusiveLower.getBaseValue(), exclusiveUpper.getBaseValue());
 	}
 
 	public static double lerp(double v0, double v1, double t) {

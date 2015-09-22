@@ -20,4 +20,20 @@ public class MassUnit extends Unit {
 	public static MassUnit getBaseUnit() {
 		return GRAM;
 	}
+	
+	public static MassUnit parseUnit(String unit) {
+		switch (unit) {
+		case "M\u2299":
+			return SOLAR_MASS;
+		case "M\u2295":
+			return EARTH_MASS;
+		case "t":
+			return METRIC_TON;
+		case "kg":
+			return KILOGRAM;
+		case "g":
+		default:
+			return GRAM;
+		}
+	}
 }

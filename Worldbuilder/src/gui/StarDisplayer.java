@@ -50,7 +50,7 @@ public class StarDisplayer extends JPanel {
 				if( this.data instanceof DoubleUnitValue) {
 					this.descrip = addNonEditableInfo(column,row,2,this.data.toString());
 					DoubleUnitValue datDoubleValue = (DoubleUnitValue) this.data;
-					this.unitSelector = addUnitSelector(column*3, row, datDoubleValue.unit);
+					this.unitSelector = addUnitSelector(column*3, row, datDoubleValue.getUnit());
 				} else {
 					this.descrip = addNonEditableInfo(column,row,3,this.data.toString());
 				}
@@ -61,16 +61,16 @@ public class StarDisplayer extends JPanel {
 				//Value
 				if (this.data instanceof Value) {
 					Value<?> datValue = (Value<?>) this.data;
-					this.editField = addEditField(column, row, datValue.value.toString());
+					this.editField = addEditField(column, row, datValue.getValue().toString());
 				}
 				if (this.data instanceof DoubleValue) {
 					DoubleValue datDoubleValue = (DoubleValue) this.data;
-					this.editField = addEditField(column, row, datDoubleValue.value+"");
+					this.editField = addEditField(column, row, datDoubleValue.getBaseValue()+"");
 				}
 				//Unit
 				if (this.data instanceof DoubleUnitValue) {
 					DoubleUnitValue datDoubleValue = (DoubleUnitValue) this.data;
-					this.unitSelector = addUnitSelector(column*3, row, datDoubleValue.unit);
+					this.unitSelector = addUnitSelector(column*3, row, datDoubleValue.getUnit());
 				}
 			}
 		}
@@ -133,7 +133,7 @@ public class StarDisplayer extends JPanel {
 			}
 			DoubleUnitValue uVal = (DoubleUnitValue) this.data;
 			//Get current Unit & current Value
-			double currentVal = uVal.value;
+			double currentVal = uVal.getUnitValue();
 			
 			double newVal = currentVal;
 			if(this.data.isEditable) {
@@ -145,7 +145,7 @@ public class StarDisplayer extends JPanel {
 				}
 			} 
 			
-			newVal = Unit.recalculate(newVal, uVal.unit, newUnit);
+			newVal = Unit.recalculate(newVal, uVal.getUnit(), newUnit);
 			
 			//Set new Value
 			
@@ -153,7 +153,7 @@ public class StarDisplayer extends JPanel {
 				this.editField.setText(newVal+"");
 				this.editField.setCaretPosition(0);
 			} else {
-				DoubleUnitValue nVal = new DoubleUnitValue(newVal, uVal.description, newUnit);
+				DoubleUnitValue nVal = new DoubleUnitValue(newVal, newUnit);
 				this.descrip.setText(nVal.toString());
 			}
 			
@@ -167,7 +167,7 @@ public class StarDisplayer extends JPanel {
 				//Update Unit
 				Unit nUnit = (Unit) this.unitSelector.getSelectedItem();
 				
-				unitValueData.value = Unit.recalculate(unitValueData.value, unitValueData.unit, nUnit);
+				unitValueData.value = Unit.recalculate(unitValueData.getUnitValue(), unitValueData.getUnit(), nUnit);
 				unitValueData.unit = nUnit;
 			}
 			
@@ -182,7 +182,7 @@ public class StarDisplayer extends JPanel {
 			//Reset Unit
 			if (this.data instanceof DoubleUnitValue) {
 				DoubleUnitValue unitData = (DoubleUnitValue) this.data;
-				this.unitSelector.setSelectedItem(unitData.unit);
+				this.unitSelector.setSelectedItem(unitData.getUnit());
 			}
 
 			if(this.data.isEditable) {
@@ -190,11 +190,11 @@ public class StarDisplayer extends JPanel {
 
 				if (this.data instanceof Value) {
 					Value<?> datValue = (Value<?>) this.data;
-					t = datValue.value.toString();
+					t = datValue.getValue().toString();
 				}
 				if (this.data instanceof DoubleValue) {
 					DoubleValue datDoubleValue = (DoubleValue) this.data;
-					t =  datDoubleValue.value+"";
+					t =  datDoubleValue.getBaseValue()+"";
 				}
 				this.editField.setText(t);
 				this.editField.setCaretPosition(0);
@@ -203,7 +203,6 @@ public class StarDisplayer extends JPanel {
 			}
 		}
 	}
-
 
 	private JButton btnApply;
 	private Vector<ValueField> valueFields;
@@ -260,9 +259,9 @@ public class StarDisplayer extends JPanel {
 	private void addStarInfos(Star star) {
 		addNonEditableInfo(1, 1,3, "Startype: "+star.starType());
 
-		addValueInfo(2, 1, star.name);
-		addValueInfo(1, 2, star.mass);
-		addValueInfo(1, 3, star.radius);
+		addValueInfo(2, 1, star.getName());
+		addValueInfo(1, 2, star.getMass());
+		addValueInfo(1, 3, star.getRadius());
 
 		if(!(star instanceof BlackHole)) {
 			addValueInfo(1, 4,  star.getCircumference());
@@ -279,9 +278,9 @@ public class StarDisplayer extends JPanel {
 			MainClassStar mainClassStar = (MainClassStar) star;
 			//Main Class Infos
 
-			String color = String.format("#%06x", new Integer(mainClassStar.sColor.value.getRGB() & 0x00FFFFFF)).toUpperCase();
+			String color = String.format("#%06x", new Integer(mainClassStar.getsColor().value.getRGB() & 0x00FFFFFF)).toUpperCase();
 			JLabel lblColor = new JLabel("Color: "+color);
-			lblColor.setBackground(mainClassStar.sColor.value);
+			lblColor.setBackground(mainClassStar.getsColor().value);
 			lblColor.setOpaque(true);
 			GridBagConstraints gbc_lblColor = new GridBagConstraints();
 			gbc_lblColor.fill = GridBagConstraints.BOTH;
@@ -291,13 +290,13 @@ public class StarDisplayer extends JPanel {
 			gbc_lblColor.gridwidth = 2;
 			add(lblColor, gbc_lblColor);
 
-			addValueInfo(1, 9,  mainClassStar.luminosityInSuns);
-			addValueInfo(1, 10, mainClassStar.lifetimeInYears);
-			addValueInfo(1, 11, mainClassStar.temperatureInKelvin);
-			addValueInfo(1, 12, mainClassStar.habitableZoneInnerInAU);
-			addValueInfo(1, 13, mainClassStar.habitableZoneOuterInAU);
+			addValueInfo(1, 9,  mainClassStar.getLuminosity());
+			addValueInfo(1, 10, mainClassStar.getLifetime());
+			addValueInfo(1, 11, mainClassStar.getTemperature());
+			addValueInfo(1, 12, mainClassStar.getHabitableZoneInner());
+			addValueInfo(1, 13, mainClassStar.getHabitableZoneOuter());
 		}
-
+		 
 
 	}
 
