@@ -6,7 +6,6 @@ import java.util.Random;
 import data.DoubleUnitValue;
 import data.LimitedDoubleUnitValue;
 import data.SolarMass;
-import data.SolarRadius;
 import data.Value;
 import tools.HelperFunctions;
 import tools.MultipointInterpolator;
@@ -63,6 +62,8 @@ public class MainClassStar  extends Star{
 		setRadius();
 		setMainStarData();
 		setColor();
+		this.radius.setUnit(LenghtUnit.SOLAR_RADIUS);
+		setSphereUnits();
 	}
 
 	public MainClassStar(StarClass starClass) {
@@ -71,6 +72,8 @@ public class MainClassStar  extends Star{
 		setRadius();
 		setMainStarData();
 		setColor();
+		this.radius.setUnit(LenghtUnit.SOLAR_RADIUS);
+		setSphereUnits();
 	}
 
 	public MainClassStar(String str) {
@@ -128,33 +131,27 @@ public class MainClassStar  extends Star{
 	}
 
 	private void setMass() {
-		double baseMass = HelperFunctions.getRandomRange(this.sClass.lowerMassLimit, this.sClass.upperMassLimit);
+		double solarMass = HelperFunctions.getRandomRange(this.sClass.lowerMassLimit, this.sClass.upperMassLimit);
+		double baseMass = Unit.fromUnit(solarMass, MassUnit.SOLAR_MASS);
 		this.mass= new SolarMass(baseMass,MIN_MASS_STAR, MAX_MASS_STAR,this::notifyMassChange);
 	}
 
 	private void setRadius() {
-		Unit rUnit = null;
-		if(this.radius!=null) {
-			rUnit = this.radius.getUnit();
-		}
-		
 		double r;
 		if(getMass().getUnitValue(MassUnit.SOLAR_MASS)>1) {
 			r = Math.pow(getMass().getUnitValue(MassUnit.SOLAR_MASS), 0.5);
 		} else {
 			r = Math.pow(getMass().getUnitValue(MassUnit.SOLAR_MASS), 0.8);
 		}
-		this.radius = new SolarRadius(r, "Mass");
-		
-		if(rUnit!=null) {
-			this.radius.setUnit(rUnit);
-		}
+		r = Unit.fromUnit(r, LenghtUnit.SOLAR_RADIUS);
+		this.radius.setBaseValue(r);
 	}
 
 	private void setMainStarData() {
 
 		double exponent;
 		double massUnitValue = getMass().getUnitValue(MassUnit.SOLAR_MASS);
+		
 		if(massUnitValue<=0.1) {
 			exponent = EXPONENT_POINT_ONE_SOLAR_MASSES;
 		} else {
@@ -178,45 +175,41 @@ public class MainClassStar  extends Star{
 				}
 			}
 		}
-
-		Unit lumUnit = LuminosityUnit.SOLAR_LUMINOSITY;
-		if(this.luminosity!=null) {
-			lumUnit = this.luminosity.getUnit();
+		
+		
+		if(this.luminosity==null) {
+			this.luminosity = new DoubleUnitValue(0, "Luminosity", LuminosityUnit.SOLAR_LUMINOSITY);
 		}
-		this.luminosity = new DoubleUnitValue(Math.pow(massUnitValue, exponent),"Luminosity",lumUnit);
+		double lum = Unit.fromUnit(Math.pow(massUnitValue, exponent),LuminosityUnit.SOLAR_LUMINOSITY);
+		this.luminosity.setBaseValue(lum);
 		
-		
-		Unit lifeUnit = TimeUnit.YEAR;
-		if(this.lifetime!=null) {
-			lifeUnit = this.lifetime.getUnit();
+		if(this.lifetime==null) {
+			this.lifetime = new DoubleUnitValue(0,"Lifetime on the Main Sequence",TimeUnit.YEAR);
 		}
-		double lifetimeYearValue = massUnitValue/this.luminosity.getUnitValue(LuminosityUnit.SOLAR_LUMINOSITY);
-		this.lifetime = DoubleUnitValue.createFromUnitValue(lifetimeYearValue, "Lifetime", TimeUnit.YEAR);
-		this.lifetime.setUnit(lifeUnit);
+		
+		double life = Unit.fromUnit(massUnitValue/this.luminosity.getUnitValue(LuminosityUnit.SOLAR_LUMINOSITY),TimeUnit.SOLAR_LIFETIME);
+		this.lifetime.setBaseValue(life);
 		
 		
-		Unit tempUnit = TemperatureUnit.KELVIN;
-		if(this.temperature!=null) {
-			tempUnit = this.temperature.getUnit();
+		if(this.temperature==null) {
+			this.temperature = new DoubleUnitValue(0, "Temperature", TemperatureUnit.SOLAR_TEMPERATURE);
 		}
 		double r = getRadius().getUnitValue(LenghtUnit.SOLAR_RADIUS);
 		double temp =  Unit.fromUnit(Math.pow(this.luminosity.getUnitValue(LuminosityUnit.SOLAR_LUMINOSITY)/(r*r), 0.25),TemperatureUnit.SOLAR_TEMPERATURE);
-		this.temperature = new DoubleUnitValue(temp, "Temperature", tempUnit);
+		this.temperature.setBaseValue(temp);
 		
 		
-		Unit hInnerUnit = LenghtUnit.AU;
-		if(this.habitableZoneInner!=null) {
-			hInnerUnit = this.habitableZoneInner.getUnit();
+		if(this.habitableZoneInner==null) {
+			this.habitableZoneInner = new DoubleUnitValue(0, "Habitable Zone Inner", LenghtUnit.AU);
 		}
 		double hInner				= Unit.fromUnit(Math.sqrt(this.luminosity.getUnitValue(LuminosityUnit.SOLAR_LUMINOSITY)/1.1),LenghtUnit.AU);
-		this.habitableZoneInner = new DoubleUnitValue(hInner,  "Habitable Zone Inner", hInnerUnit);
+		this.habitableZoneInner.setBaseValue(hInner);
 		
-		Unit hOuterUnit = LenghtUnit.AU;
-		if(this.habitableZoneOuter!=null) {
-			hOuterUnit = this.habitableZoneOuter.getUnit();
+		if(this.habitableZoneOuter==null) {
+			this.habitableZoneOuter = new DoubleUnitValue(0, "Habitable Zone Outer", LenghtUnit.AU);
 		}
 		double hOuter				= Unit.fromUnit(Math.sqrt(this.luminosity.getUnitValue(LuminosityUnit.SOLAR_LUMINOSITY)/0.53),LenghtUnit.AU);
-		this.habitableZoneOuter = new DoubleUnitValue(hOuter,"Habitable Zone Outer",  hOuterUnit);
+		this.habitableZoneOuter.setBaseValue(hOuter);
 	}
 
 	private void setColor() {
@@ -267,7 +260,7 @@ public class MainClassStar  extends Star{
 	@Override
 	public String toString() {
 		String out = "Class "+this.sClass.name()+" Star";
-		if(getNameString()!="") {
+		if(!getNameString().trim().equals("")) { //FIXME add trim/Equals to all toStrings
 			out+=" - \""+getNameString()+"\"";
 		}
 		return out;

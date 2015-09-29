@@ -23,25 +23,28 @@ import javax.swing.JComboBox;
 
 import java.awt.event.ActionListener;
 import java.util.Vector;
+import java.util.function.Supplier;
 import java.awt.event.ActionEvent;
 
 public class StarDisplayer extends JPanel {
 	private static final long serialVersionUID = 1L;
-	// TODO Add Unit changer calculation  
-
 	private class ValueField {
-		//TODO Move Unit Selection/ Creation here
 		public ValueInformation data;
-		public Star star;
-
 		public JLabel descrip;
 		public JTextField editField;
 		public JComboBox<Unit> unitSelector;
+		Unit currentUnit;
+		Supplier<ValueInformation> updater;
 
-		public ValueField(int row, int column, ValueInformation val, Star dataStar) {
+		public ValueField(int row,int column,ValueInformation val,Supplier<ValueInformation> updaterMethodForData) {
+			this(row,column,val);
+			this.updater = updaterMethodForData;
+		}
+		
+		
+		public ValueField(int row, int column, ValueInformation val) {
+			this.updater = null;
 			this.data = val;
-			this.star = dataStar;
-
 			setupField(row,column);
 		}
 
@@ -63,15 +66,20 @@ public class StarDisplayer extends JPanel {
 					Value<?> datValue = (Value<?>) this.data;
 					this.editField = addEditField(column, row, datValue.getValue().toString());
 				}
-				if (this.data instanceof DoubleValue) {
+				if (this.data instanceof DoubleValue && !(this.data instanceof DoubleUnitValue)) {
 					DoubleValue datDoubleValue = (DoubleValue) this.data;
 					this.editField = addEditField(column, row, datDoubleValue.getBaseValue()+"");
 				}
 				//Unit
 				if (this.data instanceof DoubleUnitValue) {
 					DoubleUnitValue datDoubleValue = (DoubleUnitValue) this.data;
+					this.editField = addEditField(column, row, datDoubleValue.getUnitValue()+"");
 					this.unitSelector = addUnitSelector(column*3, row, datDoubleValue.getUnit());
 				}
+			}
+			
+			if(this.unitSelector!=null) {
+				this.currentUnit = (Unit)this.unitSelector.getSelectedItem();
 			}
 		}
 
@@ -104,17 +112,16 @@ public class StarDisplayer extends JPanel {
 			return txtField;
 		}
 
-		private JComboBox<Unit> addUnitSelector(int x,int y,Unit currentUnit) {
-			JComboBox<Unit> comboBox = new JComboBox<>(currentUnit.values());
-			comboBox.setSelectedItem(currentUnit);
+		private JComboBox<Unit> addUnitSelector(int x,int y,Unit defaultUnit) {
+			JComboBox<Unit> comboBox = new JComboBox<>(defaultUnit.values());
+			comboBox.setSelectedItem(defaultUnit);
 			comboBox.setEditable(false);
 			comboBox.addActionListener(new ActionListener() {
-
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					System.out.println(e.getActionCommand()+" "+currentUnit+" - "+comboBox.getSelectedItem());
-					ValueField.this.changeUnit((Unit)comboBox.getSelectedItem());
+					System.out.println(e.getActionCommand()+" "+ValueField.this.currentUnit+" - "+comboBox.getSelectedItem());
+					ValueField.this.changeUnit(ValueField.this.currentUnit,(Unit)comboBox.getSelectedItem());
+					ValueField.this.currentUnit = (Unit) comboBox.getSelectedItem();
 				}
 			});
 
@@ -127,54 +134,63 @@ public class StarDisplayer extends JPanel {
 			return comboBox;
 		}
 
-		void changeUnit(Unit newUnit) {
+		void changeUnit(Unit oldUnit, Unit newUnit) {
 			if(!(this.data instanceof DoubleUnitValue)){
 				return;
 			}
 			DoubleUnitValue uVal = (DoubleUnitValue) this.data;
-			//Get current Unit & current Value
-			double currentVal = uVal.getUnitValue();
 			
-			double newVal = currentVal;
 			if(this.data.isEditable) {
+				String editText = this.editField.getText();
+				
 				try {
-					newVal = Double.parseDouble(this.editField.getText());
+					double eVal = Double.parseDouble(editText);
+					editText = Unit.recalculate(eVal, oldUnit, newUnit)+"";
+					this.editField.setText(editText);
+					this.editField.setCaretPosition(0);
 				} catch (NumberFormatException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} 
-			
-			newVal = Unit.recalculate(newVal, uVal.getUnit(), newUnit);
-			
-			//Set new Value
-			
-			if(this.data.isEditable) {
-				this.editField.setText(newVal+"");
-				this.editField.setCaretPosition(0);
 			} else {
-				DoubleUnitValue nVal = new DoubleUnitValue(newVal, newUnit);
-				this.descrip.setText(nVal.toString());
+				this.descrip.setText(uVal.toStringWithUnit(newUnit));
 			}
-			
-			System.out.println(newVal);
 			noteChange();
 		}
 
 		public void applyEdit() {
+			//Get new ValueInformation where necessary
+			if(this.updater!=null) {
+				this.data = this.updater.get();
+			}
+			
 			if (this.data instanceof DoubleUnitValue) {
 				DoubleUnitValue unitValueData = (DoubleUnitValue) this.data;
 				//Update Unit
 				Unit nUnit = (Unit) this.unitSelector.getSelectedItem();
-				
-				unitValueData.value = Unit.recalculate(unitValueData.getUnitValue(), unitValueData.getUnit(), nUnit);
-				unitValueData.unit = nUnit;
+				unitValueData.setUnit(nUnit);
 			}
 			
 			if(this.data.isEditable) {
 				String val = this.editField.getText();
+				
+				if (this.data instanceof DoubleValue) {
+					DoubleValue doubleValue = (DoubleValue) this.data;
+					
+					double dVal = Double.parseDouble(val);
+					if(this.currentUnit!=null) {
+						dVal = Unit.fromUnit(dVal, this.currentUnit);
+					}
+					doubleValue.setBaseValue(dVal);
+				} else if (this.data instanceof Value<?>) {
+					
+					try {
+						Value<String> value = (Value<String>) this.data;
+						value.setValue(val);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 				//Apply
-				this.star.update(this.data,val);
 			}
 		}
 
@@ -206,13 +222,12 @@ public class StarDisplayer extends JPanel {
 
 	private JButton btnApply;
 	private Vector<ValueField> valueFields;
-	private Star userStar;
 	private StarGui starGui;
+	
 	/**
 	 * Create the panel.
 	 */
 	public StarDisplayer(Star star,StarGui gui) {
-		this.userStar = star;
 		this.starGui = gui;
 		this.valueFields = new Vector<>();
 
@@ -261,18 +276,20 @@ public class StarDisplayer extends JPanel {
 
 		addValueInfo(2, 1, star.getName());
 		addValueInfo(1, 2, star.getMass());
-		addValueInfo(1, 3, star.getRadius());
-
+		
 		if(!(star instanceof BlackHole)) {
-			addValueInfo(1, 4,  star.getCircumference());
-			addValueInfo(1, 5,  star.getSurfaceArea());
-			addValueInfo(1, 6,  star.getVolume());
-			addValueInfo(1, 7,  star.getDensity());
+			addValueInfo(1, 3, star.getRadius());
+			addValueInfo(1, 4,  star.getCircumference(),star::getCircumference);
+			addValueInfo(1, 5,  star.getSurfaceArea(),star::getSurfaceArea);
+			addValueInfo(1, 6,  star.getVolume(),star::getVolume);
+			addValueInfo(1, 7,  star.getDensity(),star::getDensity);
 		} else {
-			addValueInfo(1, 4,  star.getVolume());
-			addValueInfo(1, 5,  star.getDensity());
+			BlackHole hole = (BlackHole) star;
+			addValueInfo(1, 3,  hole.getVolume(),hole::getVolume);
+			addValueInfo(1, 4,  hole.getDensity(),hole::getDensity);
+			addValueInfo(1, 5,  hole.getSchwarzschildRadius());
+			addValueInfo(1, 6,  hole.getPhotosphere());
 		}
-
 
 		if(star instanceof MainClassStar) {
 			MainClassStar mainClassStar = (MainClassStar) star;
@@ -296,12 +313,9 @@ public class StarDisplayer extends JPanel {
 			addValueInfo(1, 12, mainClassStar.getHabitableZoneInner());
 			addValueInfo(1, 13, mainClassStar.getHabitableZoneOuter());
 		}
-		 
-
 	}
 
 	protected void resetChanges() {
-		
 		for(ValueField field:this.valueFields) {
 			field.resetEdit();
 		}
@@ -315,12 +329,15 @@ public class StarDisplayer extends JPanel {
 		resetChanges();
 
 		//Resort
-		//FIXME EDITABLE RESORT CAUSES NULLPOINTER EXCEPTION
 		this.starGui.updateStarList();
 	}
 
+	private void addValueInfo(int column, int row,ValueInformation data,Supplier<ValueInformation> updaterMethodForData) {
+		this.valueFields.addElement(new ValueField(row, column, data,updaterMethodForData));
+	}
+	
 	private void addValueInfo(int column, int row,ValueInformation data) {
-		this.valueFields.addElement(new ValueField(row, column, data, this.userStar));
+		this.valueFields.addElement(new ValueField(row, column, data));
 	}
 
 	JLabel addNonEditableInfo(int column,int row,int width, String data) {

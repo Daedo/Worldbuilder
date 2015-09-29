@@ -9,9 +9,8 @@ public class LimitedDoubleUnitValue extends DoubleUnitValue {
 		super(baseUnits, descrip, valUnit, editable,valueChangeCallback);
 		this.upperLimit = upper;
 		this.lowerLimit = lower;
-		setBaseValue(getBaseValue());
+		setBaseValue(getBaseValue(),false);
 	}
-	
 	
 	public LimitedDoubleUnitValue(double baseUnits,String descrip, Unit valUnit, boolean editable,DoubleUnitValue lower,DoubleUnitValue upper) {
 		super(baseUnits, descrip, valUnit, editable);
@@ -28,24 +27,49 @@ public class LimitedDoubleUnitValue extends DoubleUnitValue {
 		super(baseUnits, descrip, valUnit);	
 	}
 	
-	
-	
 	public LimitedDoubleUnitValue(double baseUnits) {
 		super(baseUnits);	
 	}
 
 	@Override
 	public void setBaseValue(double newValue) {
-		if(this.upperLimit!=null && this.upperLimit.getBaseValue()>newValue) {
+		if(this.upperLimit!=null && this.upperLimit.getBaseValue()<newValue) {
 			super.setBaseValue(this.upperLimit.getBaseValue());
 			return;
 		}
 		
-		if(this.lowerLimit!=null && this.lowerLimit.getBaseValue()<newValue) {
+		if(this.lowerLimit!=null && this.lowerLimit.getBaseValue()>newValue) {
 			super.setBaseValue(this.lowerLimit.getBaseValue());
 			return;
 		}
 		
 		super.setBaseValue(newValue);
+	}
+	
+	@Override
+	protected void setBaseValue(double newValue, boolean runCallback) {
+		if(this.upperLimit!=null && this.upperLimit.getBaseValue()<newValue) {
+			super.setBaseValue(this.upperLimit.getBaseValue(),runCallback);
+			return;
+		}
+		
+		if(this.lowerLimit!=null && this.lowerLimit.getBaseValue()>newValue) {
+			super.setBaseValue(this.lowerLimit.getBaseValue(),runCallback);
+			return;
+		}
+		
+		super.setBaseValue(newValue,runCallback);
+	}
+
+
+	
+	public void setUpperLimit(DoubleUnitValue newUpperLimit) {
+		this.upperLimit = newUpperLimit;
+	}
+	
+
+
+	public void setLowerLimit(DoubleUnitValue newLowerLimit) {
+		this.lowerLimit = newLowerLimit;
 	}
 }

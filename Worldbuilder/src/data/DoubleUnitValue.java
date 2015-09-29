@@ -1,5 +1,6 @@
 package data;
 
+import tools.HelperFunctions;
 import units.Unit;
 
 public class DoubleUnitValue extends DoubleValue {
@@ -24,11 +25,6 @@ public class DoubleUnitValue extends DoubleValue {
 		this.unit = valUnit;
 	}
 
-	@Override
-	public String toString() {
-		return (super.toString()+" "+this.unit).trim();
-	}
-	
 	public double getUnitValue() {
 		return getBaseValue()/this.unit.baseUnits;
 	}
@@ -55,5 +51,14 @@ public class DoubleUnitValue extends DoubleValue {
 	
 	public static DoubleUnitValue createFromUnitValue(double unitValue,Unit unit) {
 		return createFromUnitValue(unitValue,"",unit);
+	}
+	
+	@Override
+	public String toString() {
+		return (this.description+": "+HelperFunctions.round(getUnitValue(), 4)+" "+this.unit).trim();
+	}
+	
+	public String toStringWithUnit(Unit returnUnit) {
+		return (this.description+": "+HelperFunctions.round(getUnitValue(returnUnit), 4)+" "+returnUnit).trim();
 	}
 }

@@ -19,6 +19,7 @@ public class NeutronStar extends Star {
 
 	public NeutronStar() {
 		setMass();
+
 		setRadius();
 	}
 
@@ -30,21 +31,22 @@ public class NeutronStar extends Star {
 		
 		double baseRadius = Double.parseDouble(val[3]);
 		LenghtUnit radiusUnit = LenghtUnit.parseUnit(val[2]);
-		this.radius = new LimitedDoubleUnitValue(baseRadius, "Radius", radiusUnit, true, MIN_RADIUS_NEUTRON_STAR, MAX_RADIUS_NEUTRON_STAR);
+		this.radius.setLowerLimit(MIN_RADIUS_NEUTRON_STAR);
+		this.radius.setUpperLimit(MAX_RADIUS_NEUTRON_STAR);
+		this.radius.setUnit(radiusUnit);
+		this.radius.setBaseValue(baseRadius);
 	}
 
 	private void setRadius() {
-		Unit rUnit = null;
-		if(this.radius!=null) {
-			rUnit = this.radius.getUnit();
-		}
+		this.radius.setLowerLimit(MIN_RADIUS_NEUTRON_STAR);
+		this.radius.setUpperLimit(MAX_RADIUS_NEUTRON_STAR);
+		this.radius.setUnit(LenghtUnit.KILOMETER);
+		this.radius.isEditable = true;
 		
 		double baseRadius = HelperFunctions.getRandomRange(MIN_RADIUS_NEUTRON_STAR, MAX_RADIUS_NEUTRON_STAR);
-		this.radius= new LimitedDoubleUnitValue(baseRadius,"Radius",LenghtUnit.KILOMETER, true, MIN_RADIUS_NEUTRON_STAR, MAX_RADIUS_NEUTRON_STAR);
+		this.radius.setBaseValue(baseRadius);
+		setSphereUnits();
 		
-		if(rUnit!=null) {
-			this.radius.setUnit(rUnit);
-		}
 	}
 
 	private void setMass() {

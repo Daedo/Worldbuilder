@@ -1,6 +1,8 @@
 package stars;
 
 import data.DoubleUnitValue;
+import data.DoubleValue;
+import data.LimitedDoubleUnitValue;
 import data.Value;
 import data.ValueInformation;
 import units.AreaUnit;
@@ -12,36 +14,14 @@ import units.VolumeUnit;
 public abstract class Star {
 
 	public DoubleUnitValue mass;
-	public DoubleUnitValue radius;
+	public final LimitedDoubleUnitValue radius = new LimitedDoubleUnitValue(0, "Radius", LenghtUnit.getBaseUnit(), false,null,null, this::notifyRadiusChange);
 	public Value<String> name = new Value<>("","Name",true);
+	
+	private final DoubleUnitValue circumference = new DoubleUnitValue(0,"Circumference",this.radius.getUnit());
+	private final DoubleUnitValue surfaceArea	= new DoubleUnitValue(0,"Surface Area",AreaUnit.getUnitFromLenght((LenghtUnit)this.radius.getUnit()));
+	private final DoubleUnitValue volume		= new DoubleUnitValue(0,"Volume",VolumeUnit.getUnitFromLenght((LenghtUnit)this.radius.getUnit()));
+	private final DoubleUnitValue density		= new DoubleUnitValue(0,"Density",null);
 
-	public DoubleUnitValue getCircumference() {
-		DoubleUnitValue out =  new DoubleUnitValue(this.radius.getUnitValue()*2*Math.PI,"Circumference",this.radius.getUnit());
-
-		return out;
-	}
-
-	public DoubleUnitValue getSurfaceArea() {
-		double r = this.radius.getUnitValue();
-		DoubleUnitValue out =  new DoubleUnitValue(r*r*4*Math.PI,"Surface Area",AreaUnit.getUnitFromLenght((LenghtUnit)this.radius.getUnit()));
-		return out;
-	}
-
-	public DoubleUnitValue getVolume() {
-		double r = this.radius.getUnitValue();
-		DoubleUnitValue out =  new DoubleUnitValue(r*r*r*4/3*Math.PI,"Volume",VolumeUnit.getUnitFromLenght((LenghtUnit)this.radius.getUnit()));
-
-		return out;
-	}
-
-	public ValueInformation getDensity() {
-		DoubleUnitValue vol = getVolume();
-		DoubleUnitValue out =  new DoubleUnitValue(this.mass.getUnitValue()/vol.getUnitValue(),"Density",DensityUnit.getUnitFromMassAndVolume((MassUnit)this.mass.getUnit(), (VolumeUnit)vol.getUnit()));
-
-		return out;
-	}
-
-		
 	//Save Load Stuff
 	
 	public String dataSheet() {
@@ -91,11 +71,6 @@ public abstract class Star {
 		}
 
 	}
-
-	
-	//Sets new Values from the GUI
-	
-	
 	
 	//Getter
 	
@@ -119,6 +94,22 @@ public abstract class Star {
 		return this.mass;
 	}
 	
+	public DoubleUnitValue getCircumference() {
+		return this.circumference;
+	}
+
+	public DoubleUnitValue getSurfaceArea() {
+		return this.surfaceArea;
+	}
+
+	public DoubleValue getVolume() {
+		return this.volume;
+	}
+
+	public ValueInformation getDensity() {
+		return this.density;
+	}
+	
 	public String starType() {
 		return "Star";
 	}
@@ -126,10 +117,29 @@ public abstract class Star {
 	@Override
 	public String toString() {
 		String out = starType();
-		if(getNameString()!="") {
+		if(!getNameString().trim().equals("")) {
 			out+=" - \""+getNameString()+"\"";
 		}
 		return out;
+	}
+	
+	protected void setSphereUnits() {
+		this.circumference.setUnit(this.radius.getUnit());
+		this.surfaceArea.setUnit(AreaUnit.getUnitFromLenght((LenghtUnit)this.radius.getUnit()));
+		this.volume.setUnit(VolumeUnit.getUnitFromLenght((LenghtUnit)this.radius.getUnit()));
+		this.density.setUnit(DensityUnit.getUnitFromMassAndVolume((MassUnit)this.mass.getUnit(), (VolumeUnit)this.volume.getUnit()));
+	}
+	
+	private void notifyRadiusChange() {
+		double r = this.radius.getBaseValue();
+		this.circumference.setBaseValue(r*2*Math.PI);
+		this.surfaceArea.setBaseValue(r*r*4*Math.PI);
+		this.volume.setBaseValue(r*r*r*4/3*Math.PI);
+		if(r!=0) {
+		this.density.setBaseValue(this.mass.getBaseValue()/this.volume.getBaseValue());
+		} else {
+			this.density.setBaseValue(0);
+		}
 	}
 
 }

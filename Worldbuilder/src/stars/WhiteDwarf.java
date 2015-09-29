@@ -16,19 +16,13 @@ public class WhiteDwarf extends Star {
 		double baseMass =  HelperFunctions.getRandomRange(MIN_MASS_WHITE_DWARF, MAX_MASS_WHITE_DWARF);
 		this.mass= new SolarMass(baseMass, MIN_MASS_WHITE_DWARF,MAX_MASS_WHITE_DWARF,this::notifyMassChange);
 		setRadius();
+		this.radius.setUnit(LenghtUnit.EARTH_RADIUS);
+		setSphereUnits();
 	}
 
 	private void setRadius() {
-		Unit rUnit = null;
-		if(this.radius!=null) {
-			rUnit = this.radius.getUnit();
-		}
-		
-		this.radius = new DoubleUnitValue(Math.pow(getMass().getUnitValue(), -1.0/3.0),"Radius",LenghtUnit.EARTH_RADIUS);
-		
-		if(rUnit!=null) {
-			this.radius.setUnit(rUnit);
-		}
+		double radiusInBaseValues = Unit.fromUnit(Math.pow(getMass().getUnitValue(MassUnit.SOLAR_MASS), -1.0/3.0), LenghtUnit.EARTH_RADIUS);
+		this.radius.setBaseValue(radiusInBaseValues);
 	}
 	
 	public WhiteDwarf(String str) {		

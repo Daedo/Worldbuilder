@@ -3,7 +3,6 @@ package stars;
 import data.DoubleUnitValue;
 import data.LimitedDoubleUnitValue;
 import data.SolarMass;
-import data.SolarRadius;
 import tools.HelperFunctions;
 import units.LenghtUnit;
 import units.MassUnit;
@@ -16,20 +15,14 @@ public class GiantStar extends Star {
 	public GiantStar() {
 		double baseMass = HelperFunctions.getRandomRange(MIN_MASS_GIANT_STAR, MAX_MASS_GIANT_STAR);
 		this.mass= new SolarMass(baseMass,MIN_MASS_GIANT_STAR,MAX_MASS_GIANT_STAR,this::notifyMassChange);
+		this.radius.setUnit(LenghtUnit.SOLAR_RADIUS);
 		setRadius();
+		setSphereUnits();
 	}
 	
 	private void setRadius() {
-		Unit rUnit = null;
-		if(this.radius!=null) {
-			rUnit = this.radius.getUnit();
-		}
-		
-		this.radius = new SolarRadius(Math.pow(getRadius().getUnitValue(),0.5), "Radius");
-		
-		if(rUnit!=null) {
-			this.radius.setUnit(rUnit);
-		}
+		double r = Unit.fromUnit(Math.pow(getMass().getUnitValue(), 0.5), LenghtUnit.SOLAR_RADIUS);
+		this.radius.setBaseValue(r);
 	}
 
 	public GiantStar(String str) {
@@ -40,6 +33,7 @@ public class GiantStar extends Star {
 		
 		setRadius();
 		getRadius().setUnit(LenghtUnit.parseUnit(val[4]));
+		setSphereUnits();
 	}
 
 	@Override

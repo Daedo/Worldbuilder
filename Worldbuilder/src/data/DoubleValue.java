@@ -41,4 +41,13 @@ public class DoubleValue extends ValueInformation{
 			this.changeCallback.run();
 		}
 	}
+	
+	protected void setBaseValue(double val,boolean runCallback) {
+		if(runCallback) {
+			setBaseValue(val);
+		} else {
+			this.value = val;
+		}
+		
+	}
 }

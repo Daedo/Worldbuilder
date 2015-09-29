@@ -12,7 +12,7 @@ public class LenghtUnit extends Unit{
 	}
 	
 	public LenghtUnit[] values() {
-		LenghtUnit[] units = {METER,KILOMETER,AU,EARTH_RADIUS,SOLAR_RADIUS};
+		LenghtUnit[] units = {METER,KILOMETER,EARTH_RADIUS,SOLAR_RADIUS,AU};
 		return units;
 	}
 	
