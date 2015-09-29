@@ -8,7 +8,6 @@ import stars.GiantStar;
 import stars.MainClassStar;
 import stars.NeutronStar;
 import stars.MainClassStar.StarClass;
-import tools.HelperFunctions;
 import stars.Star;
 import stars.SuperMassiveBlackHole;
 import stars.WhiteDwarf;
@@ -31,6 +30,27 @@ public class Stargenerator {
 		
 		return out;
 	}
+	
+	public static Star generateFromStarClassName(String className) {
+		switch(className) {
+		case "Black Hole":
+			return generateBlackHole();
+		case "Super Massive Black Hole":
+			return generateSuperMassiveBlackHole();
+		case "Giant Star":
+			return generateGiantStar();
+		case "Main Class Star":
+			return generateMainClassStar();
+		case "Neutron Star":
+			return generateNeutronStar();
+		case "White Dwarf":
+			return generateWhiteDwraf();
+		default:
+			return null;
+		}
+	}
+	
+	
 	
 	private static Star generateStar() {
 		Random r = new Random();
@@ -73,4 +93,5 @@ public class Stargenerator {
 	public static NeutronStar generateNeutronStar() {
 		return new NeutronStar();
 	}
+
 }

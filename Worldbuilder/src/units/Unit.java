@@ -18,7 +18,7 @@ public class Unit {
 	public static double toUnit(double value,Unit newUnit) {
 		return value/newUnit.baseUnits;
 	}
-	
+
 	public static double fromUnit(double value,Unit oldUnit) {
 		return value*oldUnit.baseUnits;
 	}
@@ -39,5 +39,24 @@ public class Unit {
 	@Override
 	public String toString() {
 		return this.unitName;
+	}
+
+	public int getUnitId() {
+		Unit[] val = values();
+		for(int i=0;i<val.length;i++) {
+			if(val[i].equals(this)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	public Unit getUnitFromID(int id) {
+		Unit[] val = values();
+		if(id>=0 && id<val.length) {
+			return val[id];
+		}
+		return BASE;
 	}
 }

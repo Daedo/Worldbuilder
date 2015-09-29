@@ -10,8 +10,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,6 +36,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import stargenerator.StarDataSheetGenerator;
+import stargenerator.StarSaver;
 import stargenerator.Stargenerator;
 import stars.MainClassStar.StarClass;
 import stars.Star;
@@ -305,28 +309,24 @@ public class StarGui extends JFrame {
 			return;
 		}
 
-		try {
-			for(int i=0;i<this.stars.size();i++) {
-				Star s = this.stars.elementAt(i);
-				//Build Name
-				String name = (i+1)+" "+s.toString()+".txt";
-				name = fName+"\\"+name;
-
-				BufferedWriter output = null;
-
-				File file = new File(name);
-				output = new BufferedWriter(new FileWriter(file));
-
-				String dataSheet = s.dataSheet().replaceAll("\\n", "%n");
-				output.write(String.format(dataSheet));
-
-				output.close();
+		for(int i=0;i<this.stars.size();i++) {
+			Star s = this.stars.elementAt(i);
+			//Build Name
+			String name = (i+1)+" "+s.toString().replaceAll("\"", "")+".txt";
+			name = fName+"\\"+name;
+			
+			try(BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name), "UTF-8"));) {
+				
+				String dataSheet = StarDataSheetGenerator.generateDataSheet(s).replaceAll("\\n", "%n");
+				out.write(String.format(dataSheet));
+				out.close();
+			} catch ( IOException e ) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this,"The file \""+name+"\" couldn't be exported.", "Exporting", JOptionPane.INFORMATION_MESSAGE);
+				return;
 			}
-			JOptionPane.showMessageDialog(this, this.stars.size()+" were exported to the directory \""+fName+"\".", "Exporting", JOptionPane.INFORMATION_MESSAGE);
-
-		} catch ( IOException e ) {
-			e.printStackTrace();
 		}
+		JOptionPane.showMessageDialog(this, this.stars.size()+" were exported to the directory \""+fName+"\".", "Exporting", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private  String getSaveFolder() {
@@ -352,7 +352,7 @@ public class StarGui extends JFrame {
 		try {
 			Path p = new File(fName).toPath();
 			//For each Line Decode and add
-			Files.lines(p,StandardCharsets.UTF_8).map(Star::decode).forEach((s)->{if(s!=null)this.stars.add(s);});
+			Files.lines(p,StandardCharsets.UTF_8).map(StarSaver::getStarFromString).forEach((s)->{if(s!=null)this.stars.add(s);});
 			Files.lines(p,StandardCharsets.UTF_8).forEach(System.out::println);
 			updateStarList();
 			JOptionPane.showMessageDialog(this, "The File \""+fName+"\" was sucessfully loaded.", "Loading", JOptionPane.INFORMATION_MESSAGE);
@@ -386,7 +386,8 @@ public class StarGui extends JFrame {
 			output = new BufferedWriter(new FileWriter(file));
 
 			for(Star s:this.stars) {
-				output.write(s.encode()+"\n");
+				String starString = StarSaver.getSaveString(s);
+				output.write(starString+"\n");
 			}
 			output.close();
 
@@ -452,7 +453,7 @@ public class StarGui extends JFrame {
 		updateStarList();
 		this.list.setSelectedValue(star, true);
 	}
-	
+
 	void updateStarList() {
 		Star select = this.list.getSelectedValue();
 		Collections.sort(this.stars,this.sortType.starSorter);
