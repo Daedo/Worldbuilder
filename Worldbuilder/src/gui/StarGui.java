@@ -76,7 +76,7 @@ public class StarGui extends JFrame {
 	 * Create the frame.
 	 */
 	public StarGui() {
-		this.setTitle("Worldbuilder Version 1");
+		this.setTitle("Worldbuilder Version 1.1");
 		this.stars = new Vector<>();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
