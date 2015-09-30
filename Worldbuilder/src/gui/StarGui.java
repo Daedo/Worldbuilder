@@ -37,6 +37,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import stargenerator.StarDataSheetGenerator;
+import stargenerator.StarInfoboxGenerator;
 import stargenerator.StarSaver;
 import stargenerator.Stargenerator;
 import stars.MainClassStar.StarClass;
@@ -110,6 +111,14 @@ public class StarGui extends JFrame {
 			}
 		});
 		mnFile.add(mntmExportDataSheets);
+		
+		JMenuItem mntmExportHtmlTable = new JMenuItem("Export HTML Table");
+		mntmExportHtmlTable.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				exportHTMLTable();
+			}
+		});
+		mnFile.add(mntmExportHtmlTable);
 
 		JMenu mnAdd = new JMenu("Add");
 		menuBar.add(mnAdd);
@@ -301,6 +310,35 @@ public class StarGui extends JFrame {
 			}
 		});
 		scrollPane.setViewportView(this.list);
+	}
+
+	protected void exportHTMLTable() {
+		String fName = getSaveFolder();
+		if(fName==null || fName=="") {
+			return;
+		}
+
+		for(int i=0;i<this.stars.size();i++) {
+			
+			Star s = this.stars.elementAt(i);
+			//Build Name
+			String name = (i+1)+" "+s.toString().replaceAll("\"", "")+".html";
+			name = fName+"\\"+name;
+			
+			try(BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name), "UTF-8"));) {
+				
+				String dataSheet = StarInfoboxGenerator.generateHTMLCode(s).replaceAll("%", "\u0007").replaceAll("\\n", "%n");
+				System.out.println(dataSheet);
+				dataSheet = String.format(dataSheet).replaceAll("\u0007", "%");
+				out.write(dataSheet);
+				out.close();
+			} catch ( IOException e ) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(this,"The file \""+name+"\" couldn't be exported.", "Exporting", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+		}
+		JOptionPane.showMessageDialog(this, this.stars.size()+" were exported to the directory \""+fName+"\".", "Exporting", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	protected void exportDataSheets() {
